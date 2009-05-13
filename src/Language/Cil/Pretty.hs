@@ -7,8 +7,10 @@ module Language.Cil.Pretty (
     Cil (cil)
   ) where
 
-import Data.List (intersperse, intercalate)
 import Language.Cil.Syntax
+
+import Data.Bool.Extras (bool)
+import Data.List (intersperse, intercalate)
 
 {- Alternative to deriving Show
 
@@ -53,8 +55,7 @@ instance Cil TypeDef where
       (".class " ++)
     . cilList cas . cilName n
     . maybe id (\e -> sp . ("extends " ++) . cil e) et
-    . bool id (sp . ("implements " ++)
-                    . foldr (.) id (map cil its)) (null its)
+    . bool (sp . ("implements " ++) . foldr (.) id (map cil its)) id (null its)
     . ("\n{\n" ++)
     . foldr (\d s -> cil d . s) id ds
     . ("}\n" ++)
@@ -141,7 +142,7 @@ instance Cil Directive where
     let bigident = ident . ident . ident . ident
     in
       ident . ident . (".locals init (" ++)
-    . bool id nl (null ls)
+    . bool nl id (null ls)
     . foldr (.) id (intersperse (",\n" ++) (map (\l -> bigident . cil l) ls))
     . (")\n" ++)
   cil (MaxStack x)    = ident . ident . (".maxstack " ++) . shows x . nl
@@ -252,14 +253,14 @@ cilNewobj a c ps =
 cilCall :: DottedName -> DottedName -> DottedName -> [PrimitiveType] -> ShowS
 cilCall a c m ps = 
     cilAssembly a
-  . bool id (cilName c . ("::" ++)) (c == "")
+  . bool (cilName c . ("::" ++)) id (c == "")
   . cilName m
   . ("(" ++)
   . foldr (.) id (intersperse (", " ++) (map cil ps))
   . (")" ++)
 
 cilAssembly :: DottedName -> ShowS
-cilAssembly a = bool id (("[" ++) . cilName a . ("]" ++)) (a == "")
+cilAssembly a = bool (("[" ++) . cilName a . ("]" ++)) id (a == "")
 
 instance Cil PrimitiveType where
   cil Void                = ("void" ++) 
@@ -278,13 +279,9 @@ instance Cil PrimitiveType where
 -- Helper functions, to pretty print
 cilsp :: (Cil a) => a -> ShowS
 cilsp x = let s = cil x ""
-          in bool id (cil x . sp) (s == "")
+          in bool (cil x . sp) id (s == "")
 
 ident = ("    " ++)
 sp    = (" " ++)
 nl    = ('\n' :)
-
-bool :: a -> a -> Bool -> a
-bool x y True  = x
-bool x y False = y
 

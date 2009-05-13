@@ -26,5 +26,5 @@ exposed-modules:     Language.Cil
                      Language.Cil.Syntax
 other-modules:       Language.Cil.Scanner
                      Language.Cil.Parser
-build-depends:       base, array, uulib
+build-depends:       base, array, bool-extras, uulib
 
