@@ -4,7 +4,7 @@
 --
 
 module Language.Cil.Pretty (
-    Cil (cil)
+    Pretty (pr)
   ) where
 
 import Language.Cil.Syntax
@@ -15,18 +15,18 @@ import Data.List (intersperse, intercalate)
 {- Alternative to deriving Show
 
 instance Show Assembly where
-  show a = cil a ""
+  show a = pr a ""
 -}
 
-class Cil a where
+class Pretty a where
   -- | Serializes a Cil data structure to a String.
-  cil :: a -> ShowS
+  pr :: a -> ShowS
 
 -- | Serializes a DottedName, escaping some weird names (such as \'add\' 
 -- or '<Thunk>').
-cilName :: DottedName -> ShowS
-cilName "" = error "Language.Cil.Pretty.cilName: Name cannot be empty"
-cilName n  = if n `elem` kw || '<' `elem` n
+prName :: DottedName -> ShowS
+prName "" = error "Language.Cil.Pretty.prName: Name cannot be empty"
+prName n  = if n `elem` kw || '<' `elem` n
              then (escape n ++)
              else (n ++)
   where
@@ -41,245 +41,245 @@ split x xs = f xs []
                       then zs:f ys []
                       else f ys (zs++[y])
 
-instance Cil Assembly where
-  cil (Assembly as n ts) =
-      foldr (\a s -> cil a . s) id as
-    . (".assembly " ++) . cilName n . (" {}\n" ++)
-    . foldr (\t s -> cil t . nl . s) id ts
+instance Pretty Assembly where
+  pr (Assembly as n ts) =
+      foldr (\a s -> pr a . s) id as
+    . (".assembly " ++) . prName n . (" {}\n" ++)
+    . foldr (\t s -> pr t . nl . s) id ts
 
-instance Cil AssemblyRef where
-  cil (AssemblyRef n) = (".assembly extern " ++) . (n ++) . (" {}\n" ++)
+instance Pretty AssemblyRef where
+  pr (AssemblyRef n) = (".assembly extern " ++) . (n ++) . (" {}\n" ++)
 
-instance Cil TypeDef where
-  cil (Class cas n et its ds) =
+instance Pretty TypeDef where
+  pr (Class cas n et its ds) =
       (".class " ++)
-    . cilList cas . cilName n
-    . maybe id (\e -> sp . ("extends " ++) . cil e) et
-    . bool (sp . ("implements " ++) . foldr (.) id (map cil its)) id (null its)
+    . prList cas . prName n
+    . maybe id (\e -> sp . ("extends " ++) . pr e) et
+    . bool (sp . ("implements " ++) . foldr (.) id (map pr its)) id (null its)
     . ("\n{\n" ++)
-    . foldr (\d s -> cil d . s) id ds
+    . foldr (\d s -> pr d . s) id ds
     . ("}\n" ++)
-  cil (GenericClass cas n ps ds) =
-      (".class " ++) . cilList cas . cilName n
+  pr (GenericClass cas n ps ds) =
+      (".class " ++) . prList cas . prName n
     . ("`" ++) . shows (length ps) . ("<" ++)
-    . foldr (.) id (intersperse (", " ++) (map cil ps))
+    . foldr (.) id (intersperse (", " ++) (map pr ps))
     . (">\n{\n" ++)
-    . foldr (\d s -> cil d . s) id ds
+    . foldr (\d s -> pr d . s) id ds
     . ("}\n" ++)
 
-instance Cil GenParam where
-  cil (GenParam n) = cilName n
+instance Pretty GenParam where
+  pr (GenParam n) = prName n
 
-instance Cil ClassAttr where
-  cil CaPrivate       = ("private" ++)
-  cil CaPublic        = ("public" ++)
-  cil CaNestedPublic  = ("nested public" ++)
-  cil CaNestedPrivate = ("nested private" ++)
+instance Pretty ClassAttr where
+  pr CaPrivate       = ("private" ++)
+  pr CaPublic        = ("public" ++)
+  pr CaNestedPublic  = ("nested public" ++)
+  pr CaNestedPrivate = ("nested private" ++)
 
-instance Cil ClassDecl where
-  cil (FieldDef fd)  = cil fd
-  cil (MethodDef md) = cil md
-  cil (TypeDef td)   = cil td
+instance Pretty ClassDecl where
+  pr (FieldDef fd)  = pr fd
+  pr (MethodDef md) = pr md
+  pr (TypeDef td)   = pr td
 
-instance Cil TypeSpec where
-  cil (TypeSpec nm) = cilName nm
+instance Pretty TypeSpec where
+  pr (TypeSpec nm) = prName nm
 
-instance Cil FieldDef where
-  cil (Field fas t n) = 
+instance Pretty FieldDef where
+  pr (Field fas t n) = 
       ident . (".field " ++)
-      . cilList fas
-      . cil t . sp . cilName n . nl
+    . prList fas
+    . pr t . sp . prName n . nl
 
-instance Cil FieldAttr where
-  cil (FaStatic)    = ("static" ++)
-  cil (FaPublic)    = ("public" ++)
-  cil (FaPrivate)   = ("private" ++)
-  cil (FaAssembly)  = ("assembly" ++)
+instance Pretty FieldAttr where
+  pr (FaStatic)    = ("static" ++)
+  pr (FaPublic)    = ("public" ++)
+  pr (FaPrivate)   = ("private" ++)
+  pr (FaAssembly)  = ("assembly" ++)
 
-instance Cil MethodDef where
-  cil (Constructor mas t ps ms) =
+instance Pretty MethodDef where
+  pr (Constructor mas t ps ms) =
       ident . (".method " ++)
-    . cilList mas . cil t . sp . (".ctor(" ++)
-    . foldr (.) id (intersperse (", " ++) (map cil ps))
-    . (") cil managed\n" ++)
+    . prList mas . pr t . sp . (".ctor(" ++)
+    . foldr (.) id (intersperse (", " ++) (map pr ps))
+    . (") pr managed\n" ++)
     . ident . ("{\n" ++)
-    . foldr (\m s -> cil m . s) id ms
+    . foldr (\m s -> pr m . s) id ms
     . ident . ("}\n" ++)
-  cil (Method mas t n ps ms) =
+  pr (Method mas t n ps ms) =
       ident . (".method " ++)
-    . cilList mas
-    . cil t . sp . cilName n . ("(" ++)
-    . foldr (.) id (intersperse (", " ++) (map cil ps))
-    . (") cil managed\n" ++)
+    . prList mas
+    . pr t . sp . prName n . ("(" ++)
+    . foldr (.) id (intersperse (", " ++) (map pr ps))
+    . (") pr managed\n" ++)
     . ident . ("{\n" ++)
-    . foldr (\m s -> cil m . s) id ms
+    . foldr (\m s -> pr m . s) id ms
     . ident . ("}\n" ++)
 
-instance Cil MethAttr where
-  cil (MaStatic)    = ("static" ++)
-  cil (MaPublic)    = ("public" ++)
-  cil (MaPrivate)   = ("private" ++)
-  cil (MaAssembly)  = ("assembly" ++)
-  cil (MaVirtual)   = ("virtual" ++)
-  cil (MaHidebysig) = ("hidebysig" ++)
+instance Pretty MethAttr where
+  pr (MaStatic)    = ("static" ++)
+  pr (MaPublic)    = ("public" ++)
+  pr (MaPrivate)   = ("private" ++)
+  pr (MaAssembly)  = ("assembly" ++)
+  pr (MaVirtual)   = ("virtual" ++)
+  pr (MaHidebysig) = ("hidebysig" ++)
 
-instance Cil Parameter where
-  cil (Param t n) = cil t . sp . cilName n
+instance Pretty Parameter where
+  pr (Param t n) = pr t . sp . prName n
 
-instance Cil MethodDecl where
-  cil (Directive d) = cil d
-  cil (Instr i)     = cil i
-  cil (Comment s)   = ident . ident . ("// " ++) . (s ++) . nl
+instance Pretty MethodDecl where
+  pr (Directive d) = pr d
+  pr (Instr i)     = pr i
+  pr (Comment s)   = ident . ident . ("// " ++) . (s ++) . nl
 
-instance Cil Instr where
-  cil (OpCode oc)      = ident . ident . cil oc . nl
-  cil (LabOpCode l oc) = ident . (l ++) . (":" ++) . nl
-                               . ident . ident . cil oc . nl
+instance Pretty Instr where
+  pr (OpCode oc)      = ident . ident . pr oc . nl
+  pr (LabOpCode l oc) = ident . (l ++) . (":" ++) . nl
+                               . ident . ident . pr oc . nl
 
-instance Cil Directive where
-  cil (EntryPoint)    = ident . ident . (".entrypoint" ++) . nl
-  cil (LocalsInit ls) =
+instance Pretty Directive where
+  pr (EntryPoint)    = ident . ident . (".entrypoint" ++) . nl
+  pr (LocalsInit ls) =
     let bigident = ident . ident . ident . ident
     in
       ident . ident . (".locals init (" ++)
     . bool nl id (null ls)
-    . foldr (.) id (intersperse (",\n" ++) (map (\l -> bigident . cil l) ls))
+    . foldr (.) id (intersperse (",\n" ++) (map (\l -> bigident . pr l) ls))
     . (")\n" ++)
-  cil (MaxStack x)    = ident . ident . (".maxstack " ++) . shows x . nl
+  pr (MaxStack x)    = ident . ident . (".maxstack " ++) . shows x . nl
 
-instance Cil Local where
-  cil (Local t n) = cil t . sp . cilName n
+instance Pretty Local where
+  pr (Local t n) = pr t . sp . prName n
 
-instance Cil OpCode where
-  cil (Add)                 = ("add" ++)
-  cil (And)                 = ("and" ++)
-  cil (Beq l)               = ("beq " ++) . (l ++)
-  cil (Bge l)               = ("bge " ++) . (l ++)
-  cil (Bgt l)               = ("bgt " ++) . (l ++)
-  cil (Ble l)               = ("ble " ++) . (l ++)
-  cil (Blt l)               = ("blt " ++) . (l ++)
-  cil (Box t)               = ("box " ++) . cil t
-  cil (Br l)                = ("br " ++) . (l ++)
-  cil (Brfalse l)           = ("brfalse " ++) . (l ++)
-  cil (Brtrue l)            = ("brtrue " ++) . (l ++)
-  cil (Call ccs t a c m ps) = ("call " ++) . cilList ccs . cil t . sp
-                                . cilCall a c m ps
-  cil (CallVirt t a c m ps) = ("callvirt instance " ++) . cilsp t . sp
-                                . cilCall a c m ps
-  cil (Ceq)                 = ("ceq" ++)
-  cil (Cge)                 = ("cge" ++)
-  cil (Cgt)                 = ("cgt" ++)
-  cil (Cle)                 = ("cle" ++)
-  cil (Clt)                 = ("clt" ++)
-  cil (Dup)                 = ("dup" ++)
-  cil (Isinst nm)           = ("isinst " ++) . cilName nm
-  cil (Ldarg x)             = ("ldarg " ++) . shows x
-  cil (Ldarg_0)             = ("ldarg.0 " ++)
-  cil (Ldarg_1)             = ("ldarg.1 " ++)
-  cil (Ldarg_2)             = ("ldarg.2 " ++)
-  cil (Ldarg_3)             = ("ldarg.3 " ++)
-  cil (LdargN nm)           = ("ldarg " ++) . cilName nm
-  cil (Ldc_i4 x)            = ("ldc.i4 " ++) . shows x
-  cil (Ldc_i4_0)            = ("ldc.i4.0 " ++) 
-  cil (Ldc_i4_1)            = ("ldc.i4.1 " ++) 
-  cil (Ldc_i4_2)            = ("ldc.i4.2 " ++) 
-  cil (Ldc_i4_3)            = ("ldc.i4.3 " ++) 
-  cil (Ldc_i4_4)            = ("ldc.i4.4 " ++) 
-  cil (Ldc_i4_5)            = ("ldc.i4.5 " ++) 
-  cil (Ldc_i4_6)            = ("ldc.i4.6 " ++) 
-  cil (Ldc_i4_7)            = ("ldc.i4.7 " ++) 
-  cil (Ldc_i4_8)            = ("ldc.i4.8 " ++) 
-  cil (Ldc_i4_m1)           = ("ldc.i4.m1 " ++) 
-  cil (Ldc_i4_s x)          = ("ldc.i4.s " ++)  . shows x
-  cil (Ldfld t a c f)       = ("ldfld " ++) . cil t . sp . cilFld a c f
-  cil (Ldflda t a c f)      = ("ldflda " ++) . cil t . sp . cilFld a c f
-  cil (Ldind_ref)           = ("ldind.ref " ++)
-  cil (Ldloc x)             = ("ldloc " ++) . shows x
-  cil (Ldloc_0)             = ("ldloc.0 " ++)
-  cil (Ldloc_1)             = ("ldloc.1 " ++)
-  cil (Ldloc_2)             = ("ldloc.2 " ++)
-  cil (Ldloc_3)             = ("ldloc.3 " ++)
-  cil (LdlocN nm)           = ("ldloc " ++) . cilName nm
-  cil (Ldloca x)            = ("ldloca " ++) . shows x
-  cil (LdlocaN nm)          = ("ldloca " ++) . cilName nm
-  cil (Ldsfld t a c f)      = ("ldsfld " ++) . cil t . sp . cilFld a c f
-  cil (Ldsflda t a c f)     = ("ldsflda " ++) . cil t . sp . cilFld a c f
-  cil (Ldstr s)             = ("ldstr " ++) . shows s
-  cil (Neg)                 = ("neg" ++)
-  cil (Newobj t a c ps)     = ("newobj instance " ++) . cil t . sp
-                               . cilNewobj a c ps
-  cil (Nop)                 = ("nop" ++)
-  cil (Pop)                 = ("pop" ++)
-  cil (Rem)                 = ("rem" ++)
-  cil (Ret)                 = ("ret" ++)
-  cil (Stfld t a c f)       = ("stfld " ++) . cil t . sp . cilFld a c f
-  cil (Stind_ref)           = ("stind.ref " ++)
-  cil (Stloc x)             = ("stloc " ++) . shows x
-  cil (Stloc_0)             = ("stloc.0 " ++)
-  cil (Stloc_1)             = ("stloc.1 " ++)
-  cil (Stloc_2)             = ("stloc.2 " ++)
-  cil (Stloc_3)             = ("stloc.3 " ++)
-  cil (StlocN nm)           = ("stloc " ++) . cilName nm
-  cil (Stsfld t a c f)      = ("stsfld " ++) . cil t . sp . cilFld a c f
-  cil (Sub)                 = ("sub" ++)
-  cil (Tail)                = ("tail." ++)
-  cil (Tailcall opcode)     = ("tail. " ++) . cil opcode
-  cil (Unbox t)             = ("unbox " ++) . cil t
+instance Pretty OpCode where
+  pr (Add)                 = ("add" ++)
+  pr (And)                 = ("and" ++)
+  pr (Beq l)               = ("beq " ++) . (l ++)
+  pr (Bge l)               = ("bge " ++) . (l ++)
+  pr (Bgt l)               = ("bgt " ++) . (l ++)
+  pr (Ble l)               = ("ble " ++) . (l ++)
+  pr (Blt l)               = ("blt " ++) . (l ++)
+  pr (Box t)               = ("box " ++) . pr t
+  pr (Br l)                = ("br " ++) . (l ++)
+  pr (Brfalse l)           = ("brfalse " ++) . (l ++)
+  pr (Brtrue l)            = ("brtrue " ++) . (l ++)
+  pr (Call ccs t a c m ps) = ("call " ++) . prList ccs . pr t . sp
+                               . prCall a c m ps
+  pr (CallVirt t a c m ps) = ("callvirt instance " ++) . prsp t . sp
+                               . prCall a c m ps
+  pr (Ceq)                 = ("ceq" ++)
+  pr (Cge)                 = ("cge" ++)
+  pr (Cgt)                 = ("cgt" ++)
+  pr (Cle)                 = ("cle" ++)
+  pr (Clt)                 = ("clt" ++)
+  pr (Dup)                 = ("dup" ++)
+  pr (Isinst nm)           = ("isinst " ++) . prName nm
+  pr (Ldarg x)             = ("ldarg " ++) . shows x
+  pr (Ldarg_0)             = ("ldarg.0 " ++)
+  pr (Ldarg_1)             = ("ldarg.1 " ++)
+  pr (Ldarg_2)             = ("ldarg.2 " ++)
+  pr (Ldarg_3)             = ("ldarg.3 " ++)
+  pr (LdargN nm)           = ("ldarg " ++) . prName nm
+  pr (Ldc_i4 x)            = ("ldc.i4 " ++) . shows x
+  pr (Ldc_i4_0)            = ("ldc.i4.0 " ++) 
+  pr (Ldc_i4_1)            = ("ldc.i4.1 " ++) 
+  pr (Ldc_i4_2)            = ("ldc.i4.2 " ++) 
+  pr (Ldc_i4_3)            = ("ldc.i4.3 " ++) 
+  pr (Ldc_i4_4)            = ("ldc.i4.4 " ++) 
+  pr (Ldc_i4_5)            = ("ldc.i4.5 " ++) 
+  pr (Ldc_i4_6)            = ("ldc.i4.6 " ++) 
+  pr (Ldc_i4_7)            = ("ldc.i4.7 " ++) 
+  pr (Ldc_i4_8)            = ("ldc.i4.8 " ++) 
+  pr (Ldc_i4_m1)           = ("ldc.i4.m1 " ++) 
+  pr (Ldc_i4_s x)          = ("ldc.i4.s " ++)  . shows x
+  pr (Ldfld t a c f)       = ("ldfld " ++) . pr t . sp . prFld a c f
+  pr (Ldflda t a c f)      = ("ldflda " ++) . pr t . sp . prFld a c f
+  pr (Ldind_ref)           = ("ldind.ref " ++)
+  pr (Ldloc x)             = ("ldloc " ++) . shows x
+  pr (Ldloc_0)             = ("ldloc.0 " ++)
+  pr (Ldloc_1)             = ("ldloc.1 " ++)
+  pr (Ldloc_2)             = ("ldloc.2 " ++)
+  pr (Ldloc_3)             = ("ldloc.3 " ++)
+  pr (LdlocN nm)           = ("ldloc " ++) . prName nm
+  pr (Ldloca x)            = ("ldloca " ++) . shows x
+  pr (LdlocaN nm)          = ("ldloca " ++) . prName nm
+  pr (Ldsfld t a c f)      = ("ldsfld " ++) . pr t . sp . prFld a c f
+  pr (Ldsflda t a c f)     = ("ldsflda " ++) . pr t . sp . prFld a c f
+  pr (Ldstr s)             = ("ldstr " ++) . shows s
+  pr (Neg)                 = ("neg" ++)
+  pr (Newobj t a c ps)     = ("newobj instance " ++) . pr t . sp
+                               . prNewobj a c ps
+  pr (Nop)                 = ("nop" ++)
+  pr (Pop)                 = ("pop" ++)
+  pr (Rem)                 = ("rem" ++)
+  pr (Ret)                 = ("ret" ++)
+  pr (Stfld t a c f)       = ("stfld " ++) . pr t . sp . prFld a c f
+  pr (Stind_ref)           = ("stind.ref " ++)
+  pr (Stloc x)             = ("stloc " ++) . shows x
+  pr (Stloc_0)             = ("stloc.0 " ++)
+  pr (Stloc_1)             = ("stloc.1 " ++)
+  pr (Stloc_2)             = ("stloc.2 " ++)
+  pr (Stloc_3)             = ("stloc.3 " ++)
+  pr (StlocN nm)           = ("stloc " ++) . prName nm
+  pr (Stsfld t a c f)      = ("stsfld " ++) . pr t . sp . prFld a c f
+  pr (Sub)                 = ("sub" ++)
+  pr (Tail)                = ("tail." ++)
+  pr (Tailcall opcode)     = ("tail. " ++) . pr opcode
+  pr (Unbox t)             = ("unbox " ++) . pr t
 
-instance Cil CallConv where
-  cil (CcInstance) = ("instance" ++)
+instance Pretty CallConv where
+  pr (CcInstance) = ("instance" ++)
 
-cilList :: (Cil a) => [a] -> ShowS
-cilList = foldr (\x s -> cil x . sp . s) id
+prList :: (Pretty a) => [a] -> ShowS
+prList = foldr (\x s -> pr x . sp . s) id
 
-cilFld :: DottedName -> DottedName -> DottedName -> ShowS
-cilFld a c f = 
-    cilAssembly a
+prFld :: DottedName -> DottedName -> DottedName -> ShowS
+prFld a c f = 
+    prAssembly a
   . (if c /= ""
-     then cilName c . ("::" ++)
+     then prName c . ("::" ++)
      else id)
-  . cilName f
+  . prName f
 
-cilNewobj :: DottedName -> DottedName -> [PrimitiveType] -> ShowS
-cilNewobj a c ps = 
-    cilAssembly a
+prNewobj :: DottedName -> DottedName -> [PrimitiveType] -> ShowS
+prNewobj a c ps = 
+    prAssembly a
   . (if c /= ""
-     then cilName c . ("::" ++)
+     then prName c . ("::" ++)
      else id)
   . (".ctor(" ++)
-  . foldr (.) id (intersperse (", " ++) (map cil ps))
+  . foldr (.) id (intersperse (", " ++) (map pr ps))
   . (")" ++)
 
-cilCall :: DottedName -> DottedName -> DottedName -> [PrimitiveType] -> ShowS
-cilCall a c m ps = 
-    cilAssembly a
-  . bool (cilName c . ("::" ++)) id (c == "")
-  . cilName m
+prCall :: DottedName -> DottedName -> DottedName -> [PrimitiveType] -> ShowS
+prCall a c m ps = 
+    prAssembly a
+  . bool (prName c . ("::" ++)) id (c == "")
+  . prName m
   . ("(" ++)
-  . foldr (.) id (intersperse (", " ++) (map cil ps))
+  . foldr (.) id (intersperse (", " ++) (map pr ps))
   . (")" ++)
 
-cilAssembly :: DottedName -> ShowS
-cilAssembly a = bool (("[" ++) . cilName a . ("]" ++)) id (a == "")
+prAssembly :: DottedName -> ShowS
+prAssembly a = bool (("[" ++) . prName a . ("]" ++)) id (a == "")
 
-instance Cil PrimitiveType where
-  cil Void                = ("void" ++) 
-  cil Bool                = ("bool" ++)
-  cil Char                = ("char" ++)
-  cil Byte                = ("uint8" ++)
-  cil Int32               = ("int32" ++)
-  cil Int64               = ("int64" ++)
-  cil String              = ("string" ++)
-  cil Object              = ("object" ++)
-  cil (ValueType a c)     = ("valuetype " ++) . cilAssembly a . cilName c
-  cil (ReferenceType a c) = ("class " ++ ) . cilAssembly a . cilName c
-  cil (GenericType x)     = ("!" ++) . shows x
-  cil (ByRef pt)          = cil pt . ("&" ++)
+instance Pretty PrimitiveType where
+  pr Void                = ("void" ++) 
+  pr Bool                = ("bool" ++)
+  pr Char                = ("char" ++)
+  pr Byte                = ("uint8" ++)
+  pr Int32               = ("int32" ++)
+  pr Int64               = ("int64" ++)
+  pr String              = ("string" ++)
+  pr Object              = ("object" ++)
+  pr (ValueType a c)     = ("valuetype " ++) . prAssembly a . prName c
+  pr (ReferenceType a c) = ("class " ++ ) . prAssembly a . prName c
+  pr (GenericType x)     = ("!" ++) . shows x
+  pr (ByRef pt)          = pr pt . ("&" ++)
 
 -- Helper functions, to pretty print
-cilsp :: (Cil a) => a -> ShowS
-cilsp x = let s = cil x ""
-          in bool (cil x . sp) id (s == "")
+prsp :: (Pretty a) => a -> ShowS
+prsp x = let s = pr x ""
+         in bool (pr x . sp) id (s == "")
 
 ident = ("    " ++)
 sp    = (" " ++)
