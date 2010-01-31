@@ -42,6 +42,7 @@ module Language.Cil.Build (
   , ldsfld
   , ldsflda
   , ldstr
+  , mul
   , neg
   , newobj
   , nop
@@ -207,6 +208,9 @@ ldsflda p a t f = mdecl $ Ldsflda p a t f
 
 ldstr :: String -> MethodDecl
 ldstr = mdecl . Ldstr
+
+mul :: MethodDecl
+mul = mdecl $ Mul
 
 neg :: MethodDecl
 neg = mdecl $ Neg

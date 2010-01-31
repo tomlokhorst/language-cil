@@ -246,6 +246,7 @@ data OpCode
             , fieldName    :: DottedName     -- ^ Name of the field.
             } -- ^ Pops type reference, find address of specified field on the type, pushes address to the stack.
   | Ldstr String       -- ^ Pushes an object reference to the specified string constant.
+  | Mul                -- ^ Pops 2 values, multiplies the values, pushes result.
   | Neg                -- ^ Pops 1 value, negates the value, pushes the value.
   | Newobj { returnType   :: PrimitiveType    -- ^ Return type of the constructor (almost alway Void).
            , assemblyName :: DottedName       -- ^ Name of the assembly where the constructor resides.

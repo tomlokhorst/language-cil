@@ -205,6 +205,7 @@ instance Pretty OpCode where
   pr (Ldsfld t a c f)      = ("ldsfld " ++) . pr t . sp . prFld a c f
   pr (Ldsflda t a c f)     = ("ldsflda " ++) . pr t . sp . prFld a c f
   pr (Ldstr s)             = ("ldstr " ++) . shows s
+  pr (Mul)                 = ("mul" ++)
   pr (Neg)                 = ("neg" ++)
   pr (Newobj t a c ps)     = ("newobj instance " ++) . pr t . sp
                                . prNewobj a c ps
