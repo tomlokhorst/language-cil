@@ -2,7 +2,7 @@ module Example where
 
 import Language.Cil
 
-main = putStr (cil ass "")
+main = putStr (pr ass "")
 
 ass :: Assembly
 ass = Assembly [mscorlibRef] "Example" [hello]

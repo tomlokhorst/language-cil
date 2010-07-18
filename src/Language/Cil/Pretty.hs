@@ -101,7 +101,7 @@ instance Pretty MethodDef where
       ident . (".method " ++)
     . prList mas . pr t . sp . (".ctor(" ++)
     . foldr (.) id (intersperse (", " ++) (map pr ps))
-    . (") pr managed\n" ++)
+    . (") cil managed\n" ++)
     . ident . ("{\n" ++)
     . foldr (\m s -> pr m . s) id ms
     . ident . ("}\n" ++)
@@ -110,7 +110,7 @@ instance Pretty MethodDef where
     . prList mas
     . pr t . sp . prName n . ("(" ++)
     . foldr (.) id (intersperse (", " ++) (map pr ps))
-    . (") pr managed\n" ++)
+    . (") cil managed\n" ++)
     . ident . ("{\n" ++)
     . foldr (\m s -> pr m . s) id ms
     . ident . ("}\n" ++)
