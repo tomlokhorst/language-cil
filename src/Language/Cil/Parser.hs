@@ -46,7 +46,10 @@ pAssRef :: TParser AssemblyRef
 pAssRef = AssemblyRef
             <$  pPeriod <* pKey "assembly" <* pKey "extern" <*> pDottedName
             -- <*  pCurly (pList pAssemblyRefDecl)
-            <*  pOCurly <* pCCurly
+            <*  pOCurly
+            <*> pSucceed (0, 0, 0, 0)
+            <*> pSucceed "xxx"
+            <* pCCurly
 
 pTypeDef :: TParser TypeDef
 pTypeDef = (\n ds -> Class [] n Nothing [] ds)

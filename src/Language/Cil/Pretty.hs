@@ -26,12 +26,11 @@ class Pretty a where
 -- or '<Thunk>').
 prName :: DottedName -> ShowS
 prName "" = error "Language.Cil.Pretty.prName: Name cannot be empty"
-prName n  = if n `elem` kw || '<' `elem` n
+prName n  = if n `elem` keywords -- || '<' `elem` n -- temp disabled, fix later: stfld class Lazy<!0>::func
              then (escape n ++)
              else (n ++)
   where
-    kw = ["add", "pop", "value"]
-    escape s = intercalate "/" (map (\s -> "'" ++ s ++ "'") (filter (/=[]) (split '/' s)))
+    escape s = intercalate "/" (map (\s' -> "'" ++ s' ++ "'") (filter (/=[]) (split '/' s)))
 
 split :: Eq a => a -> [a] -> [[a]]
 split x xs = f xs []
@@ -48,7 +47,12 @@ instance Pretty Assembly where
     . foldr (\t s -> pr t . nl . s) id ts
 
 instance Pretty AssemblyRef where
-  pr (AssemblyRef n) = (".assembly extern " ++) . (n ++) . (" {}\n" ++)
+  pr (AssemblyRef n (x0, x1, x2, x3) t) =
+      (".assembly extern " ++) . (n ++) . nl
+    . ("{" ++) . nl
+    . ident . (".ver " ++) . shows x0 . (":" ++) . shows x1 . (":" ++) . shows x2 . (":" ++) . shows x3 . nl
+    . ident . (".publickeytoken = (" ++) . (t ++) . (")" ++) . nl
+    . ("}" ++) . nl
 
 instance Pretty TypeDef where
   pr (Class cas n et its ds) =
@@ -193,6 +197,7 @@ instance Pretty OpCode where
   pr (Ldc_i4_s x)          = ("ldc.i4.s " ++)  . shows x
   pr (Ldfld t a c f)       = ("ldfld " ++) . pr t . sp . prFld a c f
   pr (Ldflda t a c f)      = ("ldflda " ++) . pr t . sp . prFld a c f
+  pr (Ldftn t a c m ps)    = ("ldftn " ++) . pr t . sp . prCall a c m ps
   pr (Ldind_ref)           = ("ldind.ref " ++)
   pr (Ldloc x)             = ("ldloc " ++) . shows x
   pr (Ldloc_0)             = ("ldloc.0 " ++)
@@ -261,7 +266,7 @@ prCall a c m ps =
   . (")" ++)
 
 prAssembly :: DottedName -> ShowS
-prAssembly a = bool (("[" ++) . prName a . ("]" ++)) id (a == "")
+prAssembly a = bool (("class [" ++) . prName a . ("]" ++)) id (a == "")
 
 instance Pretty PrimitiveType where
   pr Void                = ("void" ++) 
@@ -270,10 +275,13 @@ instance Pretty PrimitiveType where
   pr Byte                = ("uint8" ++)
   pr Int32               = ("int32" ++)
   pr Int64               = ("int64" ++)
+  pr IntPtr              = ("native int" ++)
   pr String              = ("string" ++)
   pr Object              = ("object" ++)
   pr (ValueType a c)     = ("valuetype " ++) . prAssembly a . prName c
   pr (ReferenceType a c) = ("class " ++ ) . prAssembly a . prName c
+  pr (GenericReferenceType a c gs) = prAssembly a . prName c . ("`" ++) . shows (length gs)
+                                       . ("<" ++) . foldr (.) id (intersperse ("," ++) (map ((("!" ++) .) . prName) gs)) . (">" ++)
   pr (GenericType x)     = ("!" ++) . shows x
   pr (ByRef pt)          = pr pt . ("&" ++)
 
@@ -282,6 +290,7 @@ prsp :: (Pretty a) => a -> ShowS
 prsp x = let s = pr x ""
          in bool (pr x . sp) id (s == "")
 
+ident, sp, nl :: ShowS
 ident = ("    " ++)
 sp    = (" " ++)
 nl    = ('\n' :)

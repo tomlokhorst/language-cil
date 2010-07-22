@@ -4,8 +4,18 @@
 --
 
 module Language.Cil.Syntax (
-    Id
+    keywords
+  , Id
   , DottedName
+  , AssemblyName
+  , TypeName
+  , GenParamName
+  , MethodName
+  , FieldName
+  , ParamName
+  , LocalName
+  , Version
+  , PublicKeyToken
   , Offset
   , Assembly      (..)
   , AssemblyRef   (..)
@@ -29,6 +39,9 @@ module Language.Cil.Syntax (
   , CallConv      (..)
   ) where
 
+keywords :: [String]
+keywords = ["add", "mul", "or", "pop", "sub", "value"]
+
 type Id = String
 
 -- | A name in the CIL world.
@@ -36,27 +49,41 @@ type Id = String
 -- currently checked.
 type DottedName = String
 
+type AssemblyName  = DottedName
+type TypeName      = DottedName
+type GenParamName  = DottedName
+type MethodName    = DottedName
+type FieldName     = DottedName
+type ParamName     = DottedName
+type LocalName     = DottedName
+
 -- | An offset, e.g. for local variables or arguments
 type Offset = Int
 
 -- | A Label in CIL.
 type Label = String
 
+-- | A Version number in CIL
+type Version = (Int, Int, Int, Int)
+
+-- | A public key token
+type PublicKeyToken = String
+
 -- | The top level Assembly.
 -- This is the root of a CIL program.
 data Assembly
-  = Assembly [AssemblyRef] DottedName [TypeDef]
+  = Assembly [AssemblyRef] AssemblyName [TypeDef]
   deriving Show
 
 -- | Assembly reference.
 data AssemblyRef
-  = AssemblyRef DottedName
+  = AssemblyRef AssemblyName Version PublicKeyToken
   deriving Show
 
 -- | A Type definition in CIL, either a class or a value type.
 data TypeDef
-  = Class [ClassAttr] DottedName (Maybe TypeSpec) [TypeSpec] [ClassDecl]
-  | GenericClass [ClassAttr] DottedName [GenParam] [ClassDecl]
+  = Class [ClassAttr] TypeName (Maybe TypeSpec) [TypeSpec] [ClassDecl]
+  | GenericClass [ClassAttr] TypeName [GenParam] [ClassDecl]
   deriving Show
 
 -- | A parameter to a generic class.
@@ -64,7 +91,7 @@ data TypeDef
 data GenParam
   = GenParam -- constraintFlags :: [ConstraintFlag]
              -- constraints     :: [DottedName]
-             {- paramName       -} DottedName
+             {- paramName       -} GenParamName
   deriving Show
 
 -- | Attribures to class definitions.
@@ -84,12 +111,12 @@ data ClassDecl
 
 -- | Type specification.
 data TypeSpec
-  = TypeSpec DottedName
+  = TypeSpec TypeName
   deriving Show
 
 -- | Field definition.
 data FieldDef
-  = Field [FieldAttr] PrimitiveType DottedName
+  = Field [FieldAttr] PrimitiveType FieldName
   deriving Show
 
 -- | Attributes to field definitions.
@@ -108,10 +135,12 @@ data PrimitiveType
   | Byte
   | Int32
   | Int64
+  | IntPtr
   | String
   | Object
-  | ValueType DottedName DottedName
-  | ReferenceType DottedName DottedName
+  | ValueType AssemblyName TypeName
+  | ReferenceType AssemblyName TypeName
+  | GenericReferenceType AssemblyName TypeName [GenParamName]
   | ByRef PrimitiveType
   | GenericType Offset
   deriving Show
@@ -119,7 +148,7 @@ data PrimitiveType
 -- | A Method definition in CIL.
 data MethodDef
   = Constructor [MethAttr] PrimitiveType [Parameter] [MethodDecl]
-  | Method [MethAttr] PrimitiveType DottedName [Parameter] [MethodDecl]
+  | Method [MethAttr] PrimitiveType MethodName [Parameter] [MethodDecl]
   deriving Show
 
 -- | Attributes to method definitions.
@@ -134,7 +163,7 @@ data MethAttr
 
 -- | A formal parameter to a method.
 data Parameter
-  = Param PrimitiveType DottedName
+  = Param PrimitiveType ParamName
   deriving Show
 
 -- | Method declarations, i.e. the body of a method.
@@ -153,7 +182,7 @@ data Directive
 
 -- | Local variables used inside a method definition.
 data Local
-  = Local PrimitiveType DottedName
+  = Local PrimitiveType LocalName
   deriving Show
 
 -- | Single instruction in method definition.
@@ -178,26 +207,28 @@ data OpCode
   | Br Label           -- ^ Unconditionally jump to specified label.
   | Brfalse Label      -- ^ Pops 1 value, if value is false, null reference or zero, jump to specified label.
   | Brtrue Label       -- ^ Pops 1 value, if value is true, not null or non-zero, jump to specified label.
-  | Call { callConv     :: [CallConv]      -- ^ Method is associated with class or instance.
-         , returnType   :: PrimitiveType   -- ^ Return type of the method.
-         , assemblyName :: DottedName      -- ^ Name of the assembly where the method resides.
-         , typeName     :: DottedName      -- ^ Name of the type of which the method is a member.
-         , methodName   :: DottedName      -- ^ Name of the method.
-         , paramTypes   :: [PrimitiveType] -- ^ Types of the formal parameters of the method.
-         } -- ^ Pops /n/ values, calls specified method, pushes return value. (where /n/ is the number of formal parameters of the method).
-  | CallVirt { returnType   :: PrimitiveType   -- ^ Return type of the method.
-             , assemblyName :: DottedName      -- ^ Name of the assembly where the method resides.
-             , typeName     :: DottedName      -- ^ Name of the type of which the method is a member.
-             , methodName   :: DottedName      -- ^ Name of the method.
-             , paramTypes   :: [PrimitiveType] -- ^ Types of the formal parameters of the method.
-             } -- ^ Pops /n/ values, calls specified virtual method, pushes return value. (where /n/ is the number of formal parameters of the method).
+  | Call
+      { callConv     :: [CallConv]      -- ^ Method is associated with class or instance.
+      , returnType   :: PrimitiveType   -- ^ Return type of the method.
+      , assemblyName :: AssemblyName    -- ^ Name of the assembly where the method resides.
+      , typeName     :: TypeName        -- ^ Name of the type of which the method is a member.
+      , methodName   :: MethodName      -- ^ Name of the method.
+      , paramTypes   :: [PrimitiveType] -- ^ Types of the formal parameters of the method.
+      } -- ^ Pops /n/ values, calls specified method, pushes return value. (where /n/ is the number of formal parameters of the method).
+  | CallVirt
+      { returnType   :: PrimitiveType   -- ^ Return type of the method.
+      , assemblyName :: AssemblyName    -- ^ Name of the assembly where the method resides.
+      , typeName     :: TypeName        -- ^ Name of the type of which the method is a member.
+      , methodName   :: MethodName      -- ^ Name of the method.
+      , paramTypes   :: [PrimitiveType] -- ^ Types of the formal parameters of the method.
+      } -- ^ Pops /n/ values, calls specified virtual method, pushes return value. (where /n/ is the number of formal parameters of the method).
   | Ceq                -- ^ Pops 2 values, if they are equal, pushes 1 to stack; otherwise, pushes 0.
   | Cge                -- ^ Pops 2 values and compares them.
   | Cgt                -- ^ Pops 2 values and compares them.
   | Cle                -- ^ Pops 2 values and compares them.
   | Clt                -- ^ Pops 2 values and compares them.
   | Dup                -- ^ Pops 1 value, copies it, pushes the same value twise.
-  | Isinst DottedName -- ^ Tests if an object reference is an instance of class, returning either a null reference or an instance of that class or interface.
+  | Isinst TypeName    -- ^ Tests if an object reference is an instance of class, returning either a null reference or an instance of that class or interface.
   | Ldarg Offset       -- ^ Loads /n/-th argument to current method onto stack.
   | Ldarg_0            -- ^ Loads 0th argument to current method onto stack.
   | Ldarg_1            -- ^ Loads 1th argument to current method onto stack.
@@ -216,16 +247,25 @@ data OpCode
   | Ldc_i4_8           -- ^ Loads the value 8 onto the stack.
   | Ldc_i4_m1          -- ^ Loads the value -1 onto the stack.
   | Ldc_i4_s Int       -- ^ Loads the supplied 8-bit integer onto the stack as 32-bit integer (short form).
-  | Ldfld { fieldType    :: PrimitiveType  -- ^ Type of the field.
-          , assemblyName :: DottedName     -- ^ Name of the assembly where the field resides.
-          , typeName     :: DottedName     -- ^ Name of the type of which the field is a member.
-          , fieldName    :: DottedName     -- ^ Name of the field.
-          } -- ^ Pops object reference, find value of specified field on object, pushes value to the stack.
-  | Ldflda { fieldType    :: PrimitiveType  -- ^ Type of the field.
-           , assemblyName :: DottedName     -- ^ Name of the assembly where the field resides.
-           , typeName     :: DottedName     -- ^ Name of the type of which the field is a member.
-           , fieldName    :: DottedName     -- ^ Name of the field.
-           } -- ^ Pops object reference, find address of specified field on the object, pushes address to the stack.
+  | Ldfld
+      { fieldType    :: PrimitiveType  -- ^ Type of the field.
+      , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.
+      , typeName     :: TypeName       -- ^ Name of the type of which the field is a member.
+      , fieldName    :: FieldName      -- ^ Name of the field.
+      } -- ^ Pops object reference, find value of specified field on object, pushes value to the stack.
+  | Ldflda
+      { fieldType    :: PrimitiveType  -- ^ Type of the field.
+      , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.
+      , typeName     :: TypeName       -- ^ Name of the type of which the field is a member.
+      , fieldName    :: FieldName      -- ^ Name of the field.
+      } -- ^ Pops object reference, find address of specified field on the object, pushes address to the stack.
+  | Ldftn 
+      { returnType   :: PrimitiveType    -- ^ Return type of the method.
+      , assemblyName :: AssemblyName     -- ^ Name of the assembly where the method resides.
+      , typeName     :: TypeName         -- ^ Name of the type of which the method is a member.
+      , methodName   :: MethodName       -- ^ Name of the method.
+      , paramTypes   :: [PrimitiveType]  -- ^ Types of the formal parameters of the method.
+      } -- ^ Pops object reference, finds address of specified method, pushes address as native int to the stack.
   | Ldind_ref          -- ^ Pops an address, pushes the object reference specified at the address.
   | Ldloc Offset       -- ^ Pushes value of local variable, specified by index, to the stack.
   | Ldloc_0            -- ^ Pushes 0th local variable to the stack.
@@ -235,33 +275,37 @@ data OpCode
   | LdlocN DottedName  -- ^ Pushes value of local variable, specified by name, to the stack.
   | Ldloca Offset      -- ^ Pushes address of local variable, specified by index, to the stack.
   | LdlocaN DottedName -- ^ Pushes address of local variable, specified by name, to the stack.
-  | Ldsfld { fieldType    :: PrimitiveType  -- ^ Type of the field.
-           , assemblyName :: DottedName     -- ^ Name of the assembly where the field resides.
-           , typeName     :: DottedName     -- ^ Name of the type of which the field is a member.
-           , fieldName    :: DottedName     -- ^ Name of the field.
-           } -- ^ Pops type reference, find value of specified field on the type, pushes value to the stack.
-  | Ldsflda { fieldType    :: PrimitiveType  -- ^ Type of the field.
-            , assemblyName :: DottedName     -- ^ Name of the assembly where the field resides.
-            , typeName     :: DottedName     -- ^ Name of the type of which the field is a member.
-            , fieldName    :: DottedName     -- ^ Name of the field.
-            } -- ^ Pops type reference, find address of specified field on the type, pushes address to the stack.
+  | Ldsfld
+      { fieldType    :: PrimitiveType  -- ^ Type of the field.
+      , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.
+      , typeName     :: TypeName       -- ^ Name of the type of which the field is a member.
+      , fieldName    :: FieldName      -- ^ Name of the field.
+      } -- ^ Pops type reference, find value of specified field on the type, pushes value to the stack.
+  | Ldsflda
+      { fieldType    :: PrimitiveType  -- ^ Type of the field.
+      , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.
+      , typeName     :: TypeName       -- ^ Name of the type of which the field is a member.
+      , fieldName    :: FieldName      -- ^ Name of the field.
+      } -- ^ Pops type reference, find address of specified field on the type, pushes address to the stack.
   | Ldstr String       -- ^ Pushes an object reference to the specified string constant.
   | Mul                -- ^ Pops 2 values, multiplies the values, pushes result.
   | Neg                -- ^ Pops 1 value, negates the value, pushes the value.
-  | Newobj { returnType   :: PrimitiveType    -- ^ Return type of the constructor (almost alway Void).
-           , assemblyName :: DottedName       -- ^ Name of the assembly where the constructor resides.
-           , typeName     :: DottedName       -- ^ Name of the type of which the constructor is a member.
-           , paramTypes   :: [PrimitiveType]  -- ^ Types of the formal paramters of the constructor.
-           } -- ^ Creates a new object or instance of a value type. Pops /n/ values, calls the specified constructor, pushes a new object reference onto the stack (where /n/ is the number of formal parameters of the constructor).
+  | Newobj
+      { returnType   :: PrimitiveType    -- ^ Return type of the constructor (almost alway Void).
+      , assemblyName :: AssemblyName     -- ^ Name of the assembly where the constructor resides.
+      , typeName     :: TypeName         -- ^ Name of the type of which the constructor is a member.
+      , paramTypes   :: [PrimitiveType]  -- ^ Types of the formal paramters of the constructor.
+      } -- ^ Creates a new object or instance of a value type. Pops /n/ values, calls the specified constructor, pushes a new object reference onto the stack (where /n/ is the number of formal parameters of the constructor).
   | Nop                -- ^ No operation is performed.
   | Pop                -- ^ Pops the top of the stack.
   | Rem                -- ^ Pops 2 values, devides the first value by the second value, pushes the remainder.
   | Ret                -- ^ Returns from the current method. Pushes top of the stack to the top of the callers stack (if stack is not empty).
-  | Stfld { fieldType    :: PrimitiveType  -- ^ Type of the field.
-          , assemblyName :: DottedName     -- ^ Name of the assembly where the field resides.
-          , typeName     :: DottedName     -- ^ Name of the type of which the field is a member.
-          , fieldName    :: DottedName     -- ^ Name of the field.
-          } -- ^ Replaces the value stored in the field of an object reference or pointer with a new value.
+  | Stfld
+      { fieldType    :: PrimitiveType  -- ^ Type of the field.
+      , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.
+      , typeName     :: TypeName       -- ^ Name of the type of which the field is a member.
+      , fieldName    :: FieldName      -- ^ Name of the field.
+      } -- ^ Replaces the value stored in the field of an object reference or pointer with a new value.
   | Stind_ref          -- ^ Pops an address and an object reference, stores the object reference at the address.
   | Stloc Offset       -- ^ Pops 1 value, stores it in the local variable specified by index.
   | Stloc_0            -- ^ Pops 1 value, stores it in the 0th local variable.
@@ -269,11 +313,12 @@ data OpCode
   | Stloc_2            -- ^ Pops 1 value, stores it in the 2th local variable.
   | Stloc_3            -- ^ Pops 1 value, stores it in the 3th local variable.
   | StlocN DottedName  -- ^ Pops 1 value, stores it in the local variable specified by name.
-  | Stsfld { fieldType    :: PrimitiveType  -- ^ Type of the field.
-           , assemblyName :: DottedName     -- ^ Name of the assembly where the field resides.
-           , typeName     :: DottedName     -- ^ Name of the type of which the field is a member.
-           , fieldName    :: DottedName     -- ^ Name of the field.
-           } -- ^ Replaces the value stored in the static field of a type with a new value.
+  | Stsfld
+      { fieldType    :: PrimitiveType  -- ^ Type of the field.
+      , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.
+      , typeName     :: TypeName       -- ^ Name of the type of which the field is a member.
+      , fieldName    :: FieldName      -- ^ Name of the field.
+      } -- ^ Replaces the value stored in the static field of a type with a new value.
   | Sub                -- ^ Pops 2 values, substracts second value from the first value, pushes result.
   | Tail               -- ^ Performs subsequent call as a tail call, by replacing current stack frame with callee stack frame.
   | Tailcall OpCode    -- ^ Performs provided call as a tail call, by replacing current stack frame with callee stack frame.
