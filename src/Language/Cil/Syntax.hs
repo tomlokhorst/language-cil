@@ -5,7 +5,6 @@
 
 module Language.Cil.Syntax (
     keywords
-  , Id
   , DottedName
   , AssemblyName
   , TypeName
@@ -41,8 +40,6 @@ module Language.Cil.Syntax (
 
 keywords :: [String]
 keywords = ["add", "mul", "or", "pop", "sub", "value"]
-
-type Id = String
 
 -- | A name in the CIL world.
 -- These need to confirm to certain restrictions, altough these aren't

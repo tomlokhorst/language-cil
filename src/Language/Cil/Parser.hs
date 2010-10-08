@@ -30,11 +30,10 @@ parse p ts = r
 pPeriod :: TParser String
 pPeriod = pSpec '.'
 
-pId :: TParser Id
-pId = pConid <|> pVarid
-
 pDottedName :: TParser DottedName
 pDottedName = intercalate "|" <$> pListSep_ng pPeriod pId
+  where
+    pId = pConid <|> pVarid
 
 pAss :: TParser Assembly
 pAss = Assembly
