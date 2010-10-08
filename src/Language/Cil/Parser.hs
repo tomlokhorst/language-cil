@@ -71,6 +71,8 @@ pPrimitiveType =  Void <$  pKey "void"
               <|> Byte <$  pKey "unsigned" <* pKey "int8"
               <|> Int32 <$ pKey "int32"
               <|> Int64 <$ pKey "int64"
+              <|> Float32 <$ pKey "float32"
+              <|> Double64 <$ pKey "double64"
               <|> String <$ pKey "string"
               <|> Object <$ pKey "object"
 

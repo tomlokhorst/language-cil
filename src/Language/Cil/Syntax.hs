@@ -132,6 +132,8 @@ data PrimitiveType
   | Byte
   | Int32
   | Int64
+  | Float32
+  | Double64
   | IntPtr
   | String
   | Object
