@@ -200,7 +200,7 @@ data Instr
   deriving Show
 
 -- | CIL OpCodes inside a method definition.
--- See <http://msdn.microsoft.com/en-us/library/system.reflection.emit.opcodes_members.aspx>
+-- See <http://msdn.microsoft.com/en-us/library/system.reflection.emit.opcodes_fields.aspx>
 -- for a more complete list with documentation.
 data OpCode
   = Add                -- ^ Pops 2 values, adds the values, pushes result.
@@ -273,7 +273,17 @@ data OpCode
       , methodName   :: MethodName       -- ^ Name of the method.
       , paramTypes   :: [PrimitiveType]  -- ^ Types of the formal parameters of the method.
       } -- ^ Pops object reference, finds address of specified method, pushes address as native int to the stack.
+  | Ldind_i            -- ^ Pops an address, pushes the native integer stored at the address.
+  | Ldind_i1           -- ^ Pops an address, pushes the 8-bit integer stored at the address as a 32-bit integer.
+  | Ldind_i2           -- ^ Pops an address, pushes the 16-bit integer stored at the address as a 32-bit integer.
+  | Ldind_i4           -- ^ Pops an address, pushes the 32-bit integer stored at the address.
+  | Ldind_i8           -- ^ Pops an address, pushes the 64-bit integer stored at the address as a 64-bit integer.
+  | Ldind_r4           -- ^ Pops an address, pushes the 32-bit float stored at the address.
+  | Ldind_r8           -- ^ Pops an address, pushes the 64-bit double stored at the address.
   | Ldind_ref          -- ^ Pops an address, pushes the object reference specified at the address.
+  | Ldind_u1           -- ^ Pops an address, pushes the 8-bit unsigned integer stored at the address as a 32-bit integer.
+  | Ldind_u2           -- ^ Pops an address, pushes the 16-bit unsigned integer stored at the address as a 32-bit integer.
+  | Ldind_u4           -- ^ Pops an address, pushes the 32-bit unsigned integer stored at the address as a 32-bit integer.
   | Ldloc Offset       -- ^ Pushes value of local variable, specified by index, to the stack.
   | Ldloc_0            -- ^ Pushes 0th local variable to the stack.
   | Ldloc_1            -- ^ Pushes 1th local variable to the stack.
@@ -313,6 +323,13 @@ data OpCode
       , typeName     :: TypeName       -- ^ Name of the type of which the field is a member.
       , fieldName    :: FieldName      -- ^ Name of the field.
       } -- ^ Replaces the value stored in the field of an object reference or pointer with a new value.
+  | Stind_i            -- ^ Pops an address and a native integer, stores the integer at the address.
+  | Stind_i1           -- ^ Pops an address and a 8-bit integer, stores the integer at the address.
+  | Stind_i2           -- ^ Pops an address and a 16-bit integer, stores the integer at the address.
+  | Stind_i4           -- ^ Pops an address and a 32-bit integer, stores the integer at the address.
+  | Stind_i8           -- ^ Pops an address and a 64-bit integer, stores the integer at the address.
+  | Stind_r4           -- ^ Pops an address and a 32-bit float, stores the float at the address.
+  | Stind_r8           -- ^ Pops an address and a 64-bit double, stores the double at the address.
   | Stind_ref          -- ^ Pops an address and an object reference, stores the object reference at the address.
   | Stloc Offset       -- ^ Pops 1 value, stores it in the local variable specified by index.
   | Stloc_0            -- ^ Pops 1 value, stores it in the 0th local variable.

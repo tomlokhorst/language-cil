@@ -128,7 +128,9 @@ instance Pretty MethAttr where
   pr (MaHidebysig) = ("hidebysig" ++)
 
 instance Pretty Parameter where
-  pr (Param pas t n) = prList pas . pr t . sp . prName n
+  pr (Param []  t n) = pr t . sp . prName n
+  pr (Param pas t n) = ("[" ++ ) . prList pas . ("]" ++ )
+                     . pr t . sp . prName n
 
 instance Pretty ParamAttr where
   pr (PaIn)   = ("in" ++)
@@ -143,7 +145,7 @@ instance Pretty MethodDecl where
 instance Pretty Instr where
   pr (OpCode oc)      = ident . ident . pr oc . nl
   pr (LabOpCode l oc) = ident . (l ++) . (":" ++) . nl
-                               . ident . ident . pr oc . nl
+                              . ident . ident . pr oc . nl
 
 instance Pretty Directive where
   pr (EntryPoint)    = ident . ident . (".entrypoint" ++) . nl
@@ -203,7 +205,17 @@ instance Pretty OpCode where
   pr (Ldfld t a c f)       = ("ldfld " ++) . pr t . sp . prFld a c f
   pr (Ldflda t a c f)      = ("ldflda " ++) . pr t . sp . prFld a c f
   pr (Ldftn t a c m ps)    = ("ldftn " ++) . pr t . sp . prCall a c m ps
+  pr (Ldind_i)             = ("ldind.i " ++)
+  pr (Ldind_i1)            = ("ldind.i1 " ++)
+  pr (Ldind_i2)            = ("ldind.i2 " ++)
+  pr (Ldind_i4)            = ("ldind.i4 " ++)
+  pr (Ldind_i8)            = ("ldind.i8 " ++)
+  pr (Ldind_r4)            = ("ldind.r4 " ++)
+  pr (Ldind_r8)            = ("ldind.r8 " ++)
   pr (Ldind_ref)           = ("ldind.ref " ++)
+  pr (Ldind_u1)            = ("ldind.u1 " ++)
+  pr (Ldind_u2)            = ("ldind.u2 " ++)
+  pr (Ldind_u4)            = ("ldind.u4 " ++)
   pr (Ldloc x)             = ("ldloc " ++) . shows x
   pr (Ldloc_0)             = ("ldloc.0 " ++)
   pr (Ldloc_1)             = ("ldloc.1 " ++)
@@ -224,6 +236,13 @@ instance Pretty OpCode where
   pr (Rem)                 = ("rem" ++)
   pr (Ret)                 = ("ret" ++)
   pr (Stfld t a c f)       = ("stfld " ++) . pr t . sp . prFld a c f
+  pr (Stind_i)             = ("stind.i " ++)
+  pr (Stind_i1)            = ("stind.i1 " ++)
+  pr (Stind_i2)            = ("stind.i2 " ++)
+  pr (Stind_i4)            = ("stind.i4 " ++)
+  pr (Stind_i8)            = ("stind.i8 " ++)
+  pr (Stind_r4)            = ("stind.r4 " ++)
+  pr (Stind_r8)            = ("stind.r8 " ++)
   pr (Stind_ref)           = ("stind.ref " ++)
   pr (Stloc x)             = ("stloc " ++) . shows x
   pr (Stloc_0)             = ("stloc.0 " ++)
