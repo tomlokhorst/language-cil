@@ -39,7 +39,17 @@ module Language.Cil.Build (
   , ldfld
   , ldflda
   , ldftn
+  , ldind_i
+  , ldind_i1
+  , ldind_i2
+  , ldind_i4
+  , ldind_i8
+  , ldind_r4
+  , ldind_r8
   , ldind_ref
+  , ldind_u1
+  , ldind_u2
+  , ldind_u4
   , ldloc
   , ldlocN
   , ldloca
@@ -55,6 +65,13 @@ module Language.Cil.Build (
   , rem
   , ret
   , stfld
+  , stind_i
+  , stind_i1
+  , stind_i2
+  , stind_i4
+  , stind_i8
+  , stind_r4
+  , stind_r8
   , stind_ref
   , stloc
   , stlocN
@@ -192,8 +209,38 @@ ldflda p a t f = mdecl $ Ldflda p a t f
 ldftn :: PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
 ldftn p a t m ps = mdecl $ Ldftn p a t m ps
 
+ldind_i :: MethodDecl
+ldind_i = mdecl $ Ldind_i
+
+ldind_i1 :: MethodDecl
+ldind_i1 = mdecl $ Ldind_i1
+
+ldind_i2 :: MethodDecl
+ldind_i2 = mdecl $ Ldind_i2
+
+ldind_i4 :: MethodDecl
+ldind_i4 = mdecl $ Ldind_i4
+
+ldind_i8 :: MethodDecl
+ldind_i8 = mdecl $ Ldind_i8
+
+ldind_r4 :: MethodDecl
+ldind_r4 = mdecl $ Ldind_r4
+
+ldind_r8 :: MethodDecl
+ldind_r8 = mdecl $ Ldind_r8
+
 ldind_ref :: MethodDecl
 ldind_ref = mdecl $ Ldind_ref
+
+ldind_u1 :: MethodDecl
+ldind_u1 = mdecl $ Ldind_u1
+
+ldind_u2 :: MethodDecl
+ldind_u2 = mdecl $ Ldind_u2
+
+ldind_u4 :: MethodDecl
+ldind_u4 = mdecl $ Ldind_u4
 
 ldloc :: Offset -> MethodDecl
 ldloc 0 = mdecl $ Ldloc_0
@@ -246,6 +293,27 @@ ret = mdecl $ Ret
 
 stfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 stfld p a t f = mdecl $ Stfld p a t f
+
+stind_i :: MethodDecl
+stind_i = mdecl $ Stind_i
+
+stind_i1 :: MethodDecl
+stind_i1 = mdecl $ Stind_i1
+
+stind_i2 :: MethodDecl
+stind_i2 = mdecl $ Stind_i2
+
+stind_i4 :: MethodDecl
+stind_i4 = mdecl $ Stind_i4
+
+stind_i8 :: MethodDecl
+stind_i8 = mdecl $ Stind_i8
+
+stind_r4 :: MethodDecl
+stind_r4 = mdecl $ Stind_r4
+
+stind_r8 :: MethodDecl
+stind_r8 = mdecl $ Stind_r8
 
 stind_ref :: MethodDecl
 stind_ref = mdecl $ Stind_ref
