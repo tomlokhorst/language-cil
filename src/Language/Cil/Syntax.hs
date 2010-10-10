@@ -26,8 +26,9 @@ module Language.Cil.Syntax (
   , FieldDef      (..)
   , FieldAttr     (..)
   , MethodDef     (..)
-  , Parameter     (..)
   , MethAttr      (..)
+  , Parameter     (..)
+  , ParamAttr     (..)
   , MethodDecl    (..)
   , Instr         (..)
   , Directive     (..)
@@ -162,7 +163,14 @@ data MethAttr
 
 -- | A formal parameter to a method.
 data Parameter
-  = Param PrimitiveType ParamName
+  = Param [ParamAttr] PrimitiveType ParamName
+  deriving Show
+
+-- | Attributes to parameter definitions.
+data ParamAttr
+  = PaIn
+  | PaOut
+  | PaOpt
   deriving Show
 
 -- | Method declarations, i.e. the body of a method.

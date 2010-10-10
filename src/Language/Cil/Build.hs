@@ -311,7 +311,7 @@ extendsCtor a c ps = Constructor [MaPublic] Void ps
   $ ldarg 0
   : map ldarg [1 .. length ps]
   ++
-  [ call [CcInstance] Void a c ".ctor" (map (\(Param t _) -> t) ps)
+  [ call [CcInstance] Void a c ".ctor" (map (\(Param _ t _) -> t) ps)
   , ret
   ]
 
