@@ -163,7 +163,7 @@ data MethAttr
 
 -- | A formal parameter to a method.
 data Parameter
-  = Param [ParamAttr] PrimitiveType ParamName
+  = Param (Maybe ParamAttr) PrimitiveType ParamName
   deriving Show
 
 -- | Attributes to parameter definitions.

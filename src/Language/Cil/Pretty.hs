@@ -128,9 +128,8 @@ instance Pretty MethAttr where
   pr (MaHidebysig) = ("hidebysig" ++)
 
 instance Pretty Parameter where
-  pr (Param []  t n) = pr t . sp . prName n
-  pr (Param pas t n) = ("[" ++ ) . prList pas . ("]" ++ )
-                     . pr t . sp . prName n
+  pr (Param mps t n) = maybe id (\p -> ("[" ++) . pr p . ("] " ++)) mps
+                         . pr t . sp . prName n
 
 instance Pretty ParamAttr where
   pr (PaIn)   = ("in" ++)
