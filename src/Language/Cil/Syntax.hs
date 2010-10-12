@@ -242,7 +242,7 @@ data OpCode
   | Ldarg_2            -- ^ Loads 2th argument to current method onto stack.
   | Ldarg_3            -- ^ Loads 3th argument to current method onto stack.
   | LdargN DottedName  -- ^ Loads named argument to current method onto stack.
-  | Ldc_i4 Int         -- ^ Loads the supplied 32-bit integer onto the stack.
+  | Ldc_i4 Integer     -- ^ Loads the supplied 32-bit integer onto the stack.
   | Ldc_i4_0           -- ^ Loads the value 0 onto the stack.
   | Ldc_i4_1           -- ^ Loads the value 1 onto the stack.
   | Ldc_i4_2           -- ^ Loads the value 2 onto the stack.
@@ -254,6 +254,9 @@ data OpCode
   | Ldc_i4_8           -- ^ Loads the value 8 onto the stack.
   | Ldc_i4_m1          -- ^ Loads the value -1 onto the stack.
   | Ldc_i4_s Int       -- ^ Loads the supplied 8-bit integer onto the stack as 32-bit integer (short form).
+  | Ldc_i8 Integer     -- ^ Loads the supplied 64-bit integer onto the stack.
+  | Ldc_r4 Float       -- ^ Loads the supplied 32-bit float onto the stack.
+  | Ldc_r8 Double      -- ^ Loads the supplied 64-bit double onto the stack.
   | Ldfld
       { fieldType    :: PrimitiveType  -- ^ Type of the field.
       , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.

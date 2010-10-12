@@ -35,6 +35,9 @@ module Language.Cil.Build (
   , ldarg
   , ldargN
   , ldc_i4
+  , ldc_i8
+  , ldc_r4
+  , ldc_r8
   , ldchar
   , ldfld
   , ldflda
@@ -182,7 +185,7 @@ ldarg x = mdecl $ Ldarg x
 ldargN :: DottedName -> MethodDecl
 ldargN = mdecl . LdargN
 
-ldc_i4 :: Int -> MethodDecl
+ldc_i4 :: Integer -> MethodDecl
 ldc_i4 (-1) = mdecl $ Ldc_i4_m1
 ldc_i4 0    = mdecl $ Ldc_i4_0
 ldc_i4 1    = mdecl $ Ldc_i4_1
@@ -194,11 +197,20 @@ ldc_i4 6    = mdecl $ Ldc_i4_6
 ldc_i4 7    = mdecl $ Ldc_i4_7
 ldc_i4 8    = mdecl $ Ldc_i4_8
 ldc_i4 x    = mdecl $ if -127 <= x && x <= 128
-                      then Ldc_i4_s x
+                      then Ldc_i4_s (fromInteger x)
                       else Ldc_i4 x
 
+ldc_i8 :: Integer -> MethodDecl
+ldc_i8 = mdecl . Ldc_i8
+
+ldc_r4 :: Float -> MethodDecl
+ldc_r4 = mdecl . Ldc_r4
+
+ldc_r8 :: Double -> MethodDecl
+ldc_r8 = mdecl . Ldc_r8
+
 ldchar :: Char -> MethodDecl
-ldchar c = ldc_i4 (ord c)
+ldchar c = ldc_i4 (toInteger $ ord c)
 
 ldfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 ldfld p a t f = mdecl $ Ldfld p a t f

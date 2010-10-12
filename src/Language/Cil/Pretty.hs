@@ -201,6 +201,9 @@ instance Pretty OpCode where
   pr (Ldc_i4_8)            = ("ldc.i4.8 " ++) 
   pr (Ldc_i4_m1)           = ("ldc.i4.m1 " ++) 
   pr (Ldc_i4_s x)          = ("ldc.i4.s " ++)  . shows x
+  pr (Ldc_i8 x)            = ("ldc.i8 " ++) . shows x
+  pr (Ldc_r4 x)            = ("ldc.r4 " ++) . shows x
+  pr (Ldc_r8 x)            = ("ldc.r8 " ++) . shows x
   pr (Ldfld t a c f)       = ("ldfld " ++) . pr t . sp . prFld a c f
   pr (Ldflda t a c f)      = ("ldflda " ++) . pr t . sp . prFld a c f
   pr (Ldftn t a c m ps)    = ("ldftn " ++) . pr t . sp . prCall a c m ps
