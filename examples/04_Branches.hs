@@ -31,7 +31,7 @@ myMain = Method [MaStatic, MaPublic] Void "main" []
   ]
 
 hellos :: MethodDef
-hellos = Method [MaStatic, MaPublic] Void "hellos" [Param Int32 "x"]
+hellos = Method [MaStatic, MaPublic] Void "hellos" [Param Nothing Int32 "x"]
   [ maxStack 4
   , localsInit
       [ Local Int32 "i"
@@ -55,7 +55,7 @@ hellos = Method [MaStatic, MaPublic] Void "hellos" [Param Int32 "x"]
   ]
 
 sign :: MethodDef
-sign = Method [MaStatic, MaPublic] Void "sign" [Param Int32 "x"]
+sign = Method [MaStatic, MaPublic] Void "sign" [Param Nothing Int32 "x"]
   [ maxStack 4
 
   , ldarg 0

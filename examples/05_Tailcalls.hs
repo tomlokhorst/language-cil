@@ -25,7 +25,7 @@ myMain = Method [MaStatic, MaPublic] Void "main" []
   ]
 
 myEven :: MethodDef
-myEven = Method [MaStatic, MaPublic] Bool "even" [Param Int32 "x"]
+myEven = Method [MaStatic, MaPublic] Bool "even" [Param Nothing Int32 "x"]
   [ ldarg 0
   , brtrue "else"
   , ldc_i4 1
@@ -40,7 +40,7 @@ myEven = Method [MaStatic, MaPublic] Bool "even" [Param Int32 "x"]
   ]
 
 myOdd :: MethodDef
-myOdd = Method [MaStatic, MaPublic] Bool "odd" [Param Int32 "x"]
+myOdd = Method [MaStatic, MaPublic] Bool "odd" [Param Nothing Int32 "x"]
   [ ldarg 0
   , brtrue "else"
   , ldc_i4 0

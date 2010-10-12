@@ -30,7 +30,7 @@ myMain = Method [MaStatic, MaPublic] Void "main" []
   ]
 
 myAdd :: MethodDef
-myAdd = Method [MaStatic, MaPublic] Int32 "add" [Param Int32 "x", Param Int32 "y"]
+myAdd = Method [MaStatic, MaPublic] Int32 "add" [Param Nothing Int32 "x", Param Nothing Int32 "y"]
   [ maxStack 2
   , ldargN "x"
   , ldargN "y"
@@ -39,7 +39,7 @@ myAdd = Method [MaStatic, MaPublic] Int32 "add" [Param Int32 "x", Param Int32 "y
   ]
 
 myEven :: MethodDef
-myEven = Method [MaStatic, MaPublic] Bool "even" [Param Int32 "x"]
+myEven = Method [MaStatic, MaPublic] Bool "even" [Param Nothing Int32 "x"]
   [ localsInit
       [ Local Int32 "r"
       , Local Bool "b"

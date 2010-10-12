@@ -26,7 +26,7 @@ myMain = Method [MaStatic, MaPublic] Void "main" []
   ]
 
 pair :: MethodDef
-pair = Method [MaStatic, MaPublic] Int32 "pairadd" [Param (ReferenceType "" "Haskell.Ehc.Hello/Tuple") "t"]
+pair = Method [MaStatic, MaPublic] Int32 "pairadd" [Param Nothing (ReferenceType "" "Haskell.Ehc.Hello/Tuple") "t"]
   [ ldarg 0
   , ldfld Int32 "" "Haskell.Ehc.Hello/Tuple" "Fst"
   , ldarg 0
@@ -46,7 +46,7 @@ mySnd :: FieldDef
 mySnd = Field [FaStatic, FaPublic] Int32 "Snd"
 
 tupleCtor :: MethodDef
-tupleCtor = Constructor [MaPublic] Void [Param Int32 "fst", Param Int32 "snd"]
+tupleCtor = Constructor [MaPublic] Void [Param Nothing Int32 "fst", Param Nothing Int32 "snd"]
   [ ldarg 0
   , call [CcInstance] Void "" "object" ".ctor" []
   , ldarg 0

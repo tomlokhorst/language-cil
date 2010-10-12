@@ -292,7 +292,7 @@ prCall a c m ps =
   . (")" ++)
 
 prAssembly :: DottedName -> ShowS
-prAssembly a = bool (("class [" ++) . prName a . ("]" ++)) id (a == "")
+prAssembly a = bool (("[" ++) . prName a . ("]" ++)) id (a == "")
 
 instance Pretty PrimitiveType where
   pr Void                = ("void" ++) 
