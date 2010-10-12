@@ -1,11 +1,11 @@
-languag-cil: Manipulating Common Intermediate Language AST
+language-cil: Manipulating Common Intermediate Language AST
 ===========================================================
 
 Language-Cil is a Haskell library for manipulating CIL abstract syntax and
 generating .il files using the concrete syntax of CIL.
 
 Common Intermediate Language (CIL), formerly known as Microsoft Intermediate
-Language (MSIL), is the lowest level language that runs on the Micosoft .NET
+Language (MSIL), is the lowest level language that runs on the Microsoft .NET
 and Mono platforms.
 
 Read more on the Wikipedia page on 
@@ -27,9 +27,9 @@ Module overview
  - **Language.Cil** Top level module, reexports sub modules
  - **Language.Cil.Analysis** Some analysis functions over AST, not really used
    yet.
- - **Language.Cil.Build** Start constructors and convencience functions, it is
+ - **Language.Cil.Build** Start constructors and convenience functions, it is
    suggested to use these over raw AST constructors.
- - **Language.Cil.Pretty** Pretty printer function `pr`. returns a `ShowS`.
+ - **Language.Cil.Pretty** Pretty printer function `pr`. Returns a `ShowS`.
  - **Language.Cil.Syntax** Concrete AST data types.
 
 
