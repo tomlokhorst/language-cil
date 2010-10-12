@@ -16,11 +16,13 @@ instance Ast Assembly where
   instructions (Assembly _ _ td) = concatMap instructions td
 
 instance Ast TypeDef where
-  instructions (Class _ _ _ _ cd) = concatMap instructions cd
+  instructions (Class _ _ _ _ cd)      = concatMap instructions cd
+  instructions (GenericClass _ _ _ cd) = concatMap instructions cd
 
 instance Ast ClassDecl where
   instructions (FieldDef  _)  = []
   instructions (MethodDef md) = instructions md
+  instructions (TypeDef td)   = instructions td
 
 instance Ast MethodDef where
   instructions (Constructor _ _ _ md) = [ i | Instr i <- md ]
