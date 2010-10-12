@@ -4,7 +4,7 @@ synopsis:            Manipulating Common Intermediate Language AST
 description:         Language-Cil is a Haskell library for manipulating CIL
                      abstract syntax and generating .il files.
                      .
-                     Common Intermediate Language (CIL), also known as
+                     Common Intermediate Language (CIL), formerly known as
                      Microsoft Intermediate Language (MSIL), is the lowest
                      level language that runs on Microsoft .NET and Mono.
                      .
