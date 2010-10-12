@@ -14,6 +14,7 @@ module Language.Cil (
   , module Language.Cil.Syntax
 --  , scanAssembly
 --  , parseAssembly
+  , writeAssembly
   ) where
 
 import Control.Monad (liftM)
@@ -33,4 +34,7 @@ scanAssembly path = do
 
 parseAssembly :: FilePath -> IO Assembly
 parseAssembly = liftM (parse pAss) . scanAssembly
+
+writeAssembly :: FilePath -> Assembly -> IO ()
+writeAssembly fp a = writeFile fp (pr a "")
 
