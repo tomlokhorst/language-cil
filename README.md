@@ -27,7 +27,7 @@ Module overview
  - **Language.Cil** Top level module, reexports sub modules
  - **Language.Cil.Analysis** Some analysis functions over AST, not really used
    yet.
- - **Language.Cil.Build** Start constructors and convenience functions, it is
+ - **Language.Cil.Build** Smart constructors and convenience functions, it is
    suggested to use these over raw AST constructors.
  - **Language.Cil.Pretty** Pretty printer function `pr`. Returns a `ShowS`.
  - **Language.Cil.Syntax** Concrete AST data types.
@@ -53,7 +53,7 @@ Getting started
           , ldstr "Enter an integer and press return."
           , call [] Void "mscorlib" "System.Console" "WriteLine" [String]
           
-            -- Reads an integer from stdin, add one two it, print result to stdout.
+            -- Reads an integer from stdin, add one to it, print result to stdout.
           , call [] String "mscorlib" "System.Console" "ReadLine" []
           , call [] Int32 "" "int32" "Parse" [String]
           
