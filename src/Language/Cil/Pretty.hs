@@ -26,7 +26,7 @@ class Pretty a where
 -- or '<Thunk>').
 prName :: DottedName -> ShowS
 prName "" = error "Language.Cil.Pretty.prName: Name cannot be empty"
-prName n  = if n `elem` keywords -- || '<' `elem` n -- temp disabled, fix later: stfld class Lazy<!0>::func
+prName n  = if n `elem` keywords -- OR '<' `elem` n -- temp disabled, fix later: stfld class Lazy<!0>::func
              then (escape n ++)
              else (n ++)
   where

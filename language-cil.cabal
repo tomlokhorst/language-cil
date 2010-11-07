@@ -1,5 +1,6 @@
 name:                language-cil
-version:             0.2.0
+version:             0.2.1
+homepage:            https://github.com/tomlokhorst/language-cil
 synopsis:            Manipulating Common Intermediate Language AST
 description:         Language-Cil is a Haskell library for manipulating CIL
                      abstract syntax and generating .il files.
@@ -8,11 +9,11 @@ description:         Language-Cil is a Haskell library for manipulating CIL
                      Microsoft Intermediate Language (MSIL), is the lowest
                      level language that runs on Microsoft .NET and Mono.
                      .
-                     Read more on Wikipedia:
-                     <http://en.wikipedia.org/wiki/Common_Intermediate_Language>
-                     .
                      This library is still  under development, it only supports
                      a small subset of the full CIL.
+                     .
+                     See <https://github.com/tomlokhorst/language-cil#readme>
+                     for an example of how to quickly get started.
 license:             BSD3
 license-file:        LICENSE
 author:              Jeroen Leeuwestein,
