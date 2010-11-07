@@ -8,6 +8,9 @@ Common Intermediate Language (CIL), formerly known as Microsoft Intermediate
 Language (MSIL), is the lowest level language that runs on the Microsoft .NET
 and Mono platforms.
 
+The [examples](https://github.com/tomlokhorst/language-cil/tree/master/examples/)
+directory has a couple of files showing how to construct different CIL ASTs.
+
 Read more on the Wikipedia page on 
 [Common Intermediate Language](http://en.wikipedia.org/wiki/Common_Intermediate_Language).
 

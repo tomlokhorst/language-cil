@@ -22,12 +22,14 @@ stability:           Experimental
 category:            Language, .NET
 build-type:          Simple
 cabal-version:       >= 1.6
-hs-source-dirs:      src
-exposed-modules:     Language.Cil
+
+library
+  hs-source-dirs:    src
+  build-depends:     base > 3 && < 5,
+                     bool-extras >= 0.3.0 && < 0.4
+  exposed-modules:   Language.Cil
                      Language.Cil.Analysis
                      Language.Cil.Build
                      Language.Cil.Pretty
                      Language.Cil.Syntax
-build-depends:       base > 3 && < 5,
-                     bool-extras == 0.3.*
-
+  
