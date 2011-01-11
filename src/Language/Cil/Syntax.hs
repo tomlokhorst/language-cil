@@ -208,8 +208,8 @@ data OpCode
   | Beq Label          -- ^ Pops 2 values, if first value is equal to second value, jump to specified label.
   | Bge Label          -- ^ Pops 2 values, if first value is greater or equal to second value, jump to specified label.
   | Bgt Label          -- ^ Pops 2 values, if first value is greater than second value, jump to specified label.
-  | Ble Label          -- ^ Pops 2 values, if first value is lesser or equal to second value, jump to specified label.
-  | Blt Label          -- ^ Pops 2 values, if first value is lesser or equal to second value, jump to specified label.
+  | Ble Label          -- ^ Pops 2 values, if first value is less or equal to second value, jump to specified label.
+  | Blt Label          -- ^ Pops 2 values, if first value is less than second value, jump to specified label.
   | Box PrimitiveType  -- ^ Pops 1 value, boxes value type, pushes object reference.
   | Br Label           -- ^ Unconditionally jump to specified label.
   | Brfalse Label      -- ^ Pops 1 value, if value is false, null reference or zero, jump to specified label.
