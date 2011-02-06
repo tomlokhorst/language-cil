@@ -256,6 +256,7 @@ instance Pretty OpCode where
   pr (Sub)                 = ("sub" ++)
   pr (Tail)                = ("tail." ++)
   pr (Tailcall opcode)     = ("tail. " ++) . pr opcode
+  pr (Unaligned a opcode)  = ("unaligned. " ++) . pr a . (" " ++) . pr opcode
   pr (Unbox t)             = ("unbox " ++) . pr t
 
 instance Pretty CallConv where
@@ -312,6 +313,11 @@ instance Pretty PrimitiveType where
                                        . ("<" ++) . foldr (.) id (intersperse ("," ++) (map ((("!" ++) .) . prName) gs)) . (">" ++)
   pr (GenericType x)     = ("!" ++) . shows x
   pr (ByRef pt)          = pr pt . ("&" ++)
+
+instance Pretty Alignment where
+  pr ByteAligned         = ("1" ++)
+  pr DoubleByteAligned   = ("2" ++)
+  pr QuadByteAligned     = ("4" ++)
 
 -- Helper functions, to pretty print
 prsp :: (Pretty a) => a -> ShowS
