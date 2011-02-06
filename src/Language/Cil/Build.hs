@@ -82,6 +82,7 @@ module Language.Cil.Build (
   , sub
   , tail
   , tailcall
+  , unaligned
   , unbox
 
   -- * Convenient AST functions
@@ -353,11 +354,45 @@ tailcall :: MethodDecl -> MethodDecl
 tailcall (Instr (OpCode oc)) = Instr (OpCode (Tailcall oc))
 tailcall _                   = error $ "Language.Cil.Build.tailcall: Can't tailcall supplied argument"
 
+unaligned :: Alignment -> MethodDecl -> MethodDecl
+unaligned a (Instr (OpCode oc)) | supportsUnaligned oc = Instr (OpCode (Unaligned a oc))
+unaligned _ _                                          = error $ "Language.Cil.Build.unaligned: Supplied argument doesn't require alignment"
 
 -- Helper functions
 
 mdecl :: OpCode -> MethodDecl
 mdecl i = Instr $ OpCode i
+
+supportsUnaligned :: OpCode -> Bool
+supportsUnaligned Ldind_i   = True
+supportsUnaligned Ldind_i1  = True
+supportsUnaligned Ldind_i2  = True
+supportsUnaligned Ldind_i4  = True
+supportsUnaligned Ldind_i8  = True
+supportsUnaligned Ldind_r4  = True
+supportsUnaligned Ldind_r8  = True
+supportsUnaligned Ldind_ref = True
+supportsUnaligned Ldind_u1  = True
+supportsUnaligned Ldind_u2  = True
+supportsUnaligned Ldind_u4  = True
+supportsUnaligned Stind_i   = True
+supportsUnaligned Stind_i1  = True
+supportsUnaligned Stind_i2  = True
+supportsUnaligned Stind_i4  = True
+supportsUnaligned Stind_i8  = True
+supportsUnaligned Stind_r4  = True
+supportsUnaligned Stind_r8  = True
+supportsUnaligned Stind_ref = True
+supportsUnaligned (Ldfld _ _ _ _) = True
+supportsUnaligned (Stfld _ _ _ _) = True
+-- there are several cases for not-yet-supported opcodes
+-- supportsUnaligned (Ldobj ...)
+-- supportsUnaligned (Stobj ...)
+-- supportsUnaligned (Initblk ...)
+-- supportsUnaligned (Cpblk ...)
+supportsUnaligned _         = False
+
+
 
 -- Convenient AST functions
 
