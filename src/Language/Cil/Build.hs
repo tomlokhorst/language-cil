@@ -112,6 +112,7 @@ module Language.Cil.Build (
   , sub
   , tail
   , tailcall
+  , throw
   , unaligned
   , unalignedPtr
   , unbox
@@ -480,6 +481,9 @@ tail = mdecl $ Tail
 tailcall :: MethodDecl -> MethodDecl
 tailcall (Instr (OpCode oc)) = Instr (OpCode (Tailcall oc))
 tailcall _                   = error $ "Language.Cil.Build.tailcall: Can't tailcall supplied argument"
+
+throw :: MethodDecl
+throw = mdecl $ Throw
 
 unaligned :: Alignment -> MethodDecl
 unaligned a = mdecl $ Unaligned a

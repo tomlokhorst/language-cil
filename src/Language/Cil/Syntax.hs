@@ -387,6 +387,7 @@ data OpCode
   | Sub                -- ^ Pops 2 values, substracts second value from the first value, pushes result.
   | Tail               -- ^ Performs subsequent call as a tail call, by replacing current stack frame with callee stack frame.
   | Tailcall OpCode    -- ^ Performs provided call as a tail call, by replacing current stack frame with callee stack frame.
+  | Throw              -- ^ Pops an object reference from the stack and throws it as an exception.
   | Unaligned Alignment -- ^ Performs subsequent load or store operation under a weaker-than-usual alignment precondition.
   | UnalignedPtr  Alignment OpCode -- ^ Performs provided load or store operation under a weaker-than-usual alignment precondition.
   | Unbox PrimitiveType  -- ^ Pops 1 value, unboxes object reference, pushes value type.

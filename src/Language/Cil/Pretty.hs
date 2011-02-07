@@ -281,6 +281,7 @@ instance Pretty OpCode where
   pr (Sub)                 = ("sub" ++)
   pr (Tail)                = ("tail." ++)
   pr (Tailcall opcode)     = ("tail. " ++) . pr opcode
+  pr (Throw)               = ("throw" ++)
   pr (Unaligned a)         = ("unaligned. " ++) . pr a
   pr (UnalignedPtr a opcode)  = ("unaligned. " ++) . pr a . sp . pr opcode
   pr (Unbox t)             = ("unbox " ++) . pr t
