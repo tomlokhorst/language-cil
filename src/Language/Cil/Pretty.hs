@@ -226,6 +226,7 @@ instance Pretty OpCode where
   pr (LdlocN nm)           = ("ldloc " ++) . prName nm
   pr (Ldloca x)            = ("ldloca " ++) . shows x
   pr (LdlocaN nm)          = ("ldloca " ++) . prName nm
+  pr (Ldnull)              = ("ldnull " ++)
   pr (Ldsfld t a c f)      = ("ldsfld " ++) . pr t . sp . prFld a c f
   pr (Ldsflda t a c f)     = ("ldsflda " ++) . pr t . sp . prFld a c f
   pr (Ldstr s)             = ("ldstr " ++) . shows s
