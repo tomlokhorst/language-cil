@@ -247,6 +247,8 @@ instance Pretty OpCode where
   pr (Newobj t a c ps)     = ("newobj instance " ++) . pr t . sp
                                . prNewobj a c ps
   pr (Nop)                 = ("nop" ++)
+  pr (Not)                 = ("not" ++)
+  pr (Or)                  = ("or" ++)
   pr (Pop)                 = ("pop" ++)
   pr (Rem)                 = ("rem" ++)
   pr (Ret)                 = ("ret" ++)
@@ -280,6 +282,7 @@ instance Pretty OpCode where
   pr (Tailcall opcode)     = ("tail. " ++) . pr opcode
   pr (Unaligned a opcode)  = ("unaligned. " ++) . pr a . sp . pr opcode
   pr (Unbox t)             = ("unbox " ++) . pr t
+  pr (Xor)                 = ("xor" ++)
 
 instance Pretty CallConv where
   pr (CcInstance) = ("instance" ++)

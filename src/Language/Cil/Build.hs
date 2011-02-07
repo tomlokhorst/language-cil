@@ -14,6 +14,7 @@ module Language.Cil.Build (
 
   -- * mdecl functions
   , add
+  , and
   , beq
   , bge
   , bgt
@@ -79,6 +80,8 @@ module Language.Cil.Build (
   , newarr
   , newobj
   , nop
+  , not
+  , or
   , pop
   , rem
   , ret
@@ -110,6 +113,7 @@ module Language.Cil.Build (
   , tailcall
   , unaligned
   , unbox
+  , xor
 
   -- * Convenient AST functions
   , label
@@ -126,7 +130,7 @@ module Language.Cil.Build (
 
 -- If someone uses the `rem' or `tail' opcode, they can deal with the ambiguous
 -- occurence themselves!
-import Prelude hiding (rem, tail)
+import Prelude hiding (rem, tail, and, or, not)
 import Data.Char (ord)
 
 import Language.Cil.Syntax
@@ -152,6 +156,9 @@ maxStack x = Directive (MaxStack x)
 
 add :: MethodDecl
 add = mdecl $ Add
+
+and :: MethodDecl
+and = mdecl $ And
 
 beq :: Label -> MethodDecl
 beq = mdecl . Beq
@@ -369,6 +376,12 @@ newobj a t ps = mdecl $ Newobj Void a t ps
 nop :: MethodDecl
 nop = mdecl $ Nop
 
+not :: MethodDecl
+not = mdecl $ Not
+
+or :: MethodDecl
+or = mdecl $ Or
+
 pop :: MethodDecl
 pop = mdecl $ Pop
 
@@ -464,6 +477,9 @@ tailcall _                   = error $ "Language.Cil.Build.tailcall: Can't tailc
 unaligned :: Alignment -> MethodDecl -> MethodDecl
 unaligned a (Instr (OpCode oc)) | supportsUnaligned oc = Instr (OpCode (Unaligned a oc))
 unaligned _ _                                          = error $ "Language.Cil.Build.unaligned: Supplied argument doesn't require alignment"
+
+xor :: MethodDecl
+xor = mdecl $ Xor
 
 -- Helper functions
 
