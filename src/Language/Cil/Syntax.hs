@@ -240,6 +240,7 @@ data OpCode
   | Ceq                -- ^ Pops 2 values, if they are equal, pushes 1 to stack; otherwise, pushes 0.
   | Cge                -- ^ Pops 2 values and compares them.
   | Cgt                -- ^ Pops 2 values and compares them.
+  | Ckfinite           -- ^ Pops a float or double. Throws an ArithmeticException if the popped value is NaN or +/- infinity. Pushes the popped value.
   | Cle                -- ^ Pops 2 values and compares them.
   | Clt                -- ^ Pops 2 values and compares them.
   | Dup                -- ^ Pops 1 value, copies it, pushes the same value twise.

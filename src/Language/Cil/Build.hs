@@ -29,6 +29,7 @@ module Language.Cil.Build (
   , ceq
   , cge
   , cgt
+  , ckfinite
   , cle
   , clt 
   , dup
@@ -202,6 +203,9 @@ cge = mdecl $ Cge
 cgt = mdecl $ Cgt
 cle = mdecl $ Cle
 clt = mdecl $ Clt
+
+ckfinite :: MethodDecl
+ckfinite = mdecl $ Ckfinite
 
 dup :: MethodDecl
 dup = mdecl $ Dup
