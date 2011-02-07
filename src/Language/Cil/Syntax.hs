@@ -341,6 +341,8 @@ data OpCode
       } -- ^ Creates a new object or instance of a value type. Pops /n/ values, calls the specified constructor, pushes a new object reference onto the stack (where /n/ is the number of formal parameters of the constructor).
   | Newarr PrimitiveType -- ^ Creates a new one-dimensional array. Pops a native int or int32, pushes a new array with that length.
   | Nop                -- ^ No operation is performed.
+  | Not                -- ^ Pops 1 value, does a bitwise complement, pushes result.
+  | Or                 -- ^ Pops 2 values, do bitwise OR between the values, pushes result.
   | Pop                -- ^ Pops the top of the stack.
   | Rem                -- ^ Pops 2 values, devides the first value by the second value, pushes the remainder.
   | Ret                -- ^ Returns from the current method. Pushes top of the stack to the top of the callers stack (if stack is not empty).
@@ -389,6 +391,7 @@ data OpCode
   | Unbox PrimitiveType  -- ^ Pops 1 value, unboxes object reference, pushes value type.
   | Volatile           -- ^ Marks subsequent pointer reference as volatile, i.e. the value it points at can be modified from another thread.
   | VolatilePtr OpCode -- ^ Marks provided pointer reference as volatile, i.e. the value it points at can be modified from another thread.
+  | Xor                -- ^ Pops 2 values, do bitwise XOR between the values, pushes result.
   deriving Show
 
 -- | Calling convention for method calls.

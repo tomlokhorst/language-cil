@@ -14,6 +14,7 @@ module Language.Cil.Build (
 
   -- * mdecl functions
   , add
+  , and
   , beq
   , bge
   , bgt
@@ -79,6 +80,8 @@ module Language.Cil.Build (
   , newarr
   , newobj
   , nop
+  , not
+  , or
   , pop
   , rem
   , ret
@@ -113,6 +116,7 @@ module Language.Cil.Build (
   , unbox
   , volatile
   , volatilePtr
+  , xor
 
   -- * Convenient AST functions
   , label
@@ -127,9 +131,9 @@ module Language.Cil.Build (
   , mscorlibRef
   ) where
 
--- If someone uses the `rem' or `tail' opcode, they can deal with the ambiguous
--- occurence themselves!
-import Prelude hiding (rem, tail)
+-- Ambiguous occurences of functions can be resolved when by importing this
+-- module qualified, or by hiding Prelude functions.
+import Prelude hiding (rem, tail, and, or, not)
 import Data.Char (ord)
 
 import Language.Cil.Syntax
@@ -155,6 +159,9 @@ maxStack x = Directive (MaxStack x)
 
 add :: MethodDecl
 add = mdecl $ Add
+
+and :: MethodDecl
+and = mdecl $ And
 
 beq :: Label -> MethodDecl
 beq = mdecl . Beq
@@ -372,6 +379,12 @@ newobj a t ps = mdecl $ Newobj Void a t ps
 nop :: MethodDecl
 nop = mdecl $ Nop
 
+not :: MethodDecl
+not = mdecl $ Not
+
+or :: MethodDecl
+or = mdecl $ Or
+
 pop :: MethodDecl
 pop = mdecl $ Pop
 
@@ -477,6 +490,9 @@ volatile = mdecl $ Volatile
 volatilePtr :: MethodDecl -> MethodDecl
 volatilePtr (Instr (OpCode oc)) | supportsVolatile oc = mdecl $ VolatilePtr oc
 volatilePtr _                                         = error $ "Language.Cil.Build.volatilePtr: Supplied argument cannot be marked volatile"
+
+xor :: MethodDecl
+xor = mdecl $ Xor
 
 -- Helper functions
 
