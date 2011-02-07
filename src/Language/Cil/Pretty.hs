@@ -256,7 +256,8 @@ instance Pretty OpCode where
   pr (Sub)                 = ("sub" ++)
   pr (Tail)                = ("tail." ++)
   pr (Tailcall opcode)     = ("tail. " ++) . pr opcode
-  pr (Unaligned a opcode)  = ("unaligned. " ++) . pr a . (" " ++) . pr opcode
+  pr (Unaligned a)         = ("unaligned. " ++) . pr a
+  pr (UnalignedPtr a opcode)  = ("unaligned. " ++) . pr a . sp . pr opcode
   pr (Unbox t)             = ("unbox " ++) . pr t
 
 instance Pretty CallConv where

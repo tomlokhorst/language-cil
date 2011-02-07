@@ -34,13 +34,13 @@ myMain = Method [MaStatic, MaPublic] Void "main" []
   , ldloca 0
   , ldc_i4 1
   , add
-  , unaligned ByteAligned ldind_i2
+  , unalignedPtr ByteAligned ldind_i2
   , box int16
 
   , ldloca 0
   , ldc_i4 2
   , add
-  , unaligned DoubleByteAligned ldind_i2
+  , unalignedPtr DoubleByteAligned ldind_i2
   , box int16
 
   , call [] Void "mscorlib" "System.Console" "WriteLine" [String, Object, Object, Object]

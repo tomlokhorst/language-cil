@@ -83,6 +83,7 @@ module Language.Cil.Build (
   , tail
   , tailcall
   , unaligned
+  , unalignedPtr
   , unbox
 
   -- * Convenient AST functions
@@ -354,9 +355,12 @@ tailcall :: MethodDecl -> MethodDecl
 tailcall (Instr (OpCode oc)) = Instr (OpCode (Tailcall oc))
 tailcall _                   = error $ "Language.Cil.Build.tailcall: Can't tailcall supplied argument"
 
-unaligned :: Alignment -> MethodDecl -> MethodDecl
-unaligned a (Instr (OpCode oc)) | supportsUnaligned oc = Instr (OpCode (Unaligned a oc))
-unaligned _ _                                          = error $ "Language.Cil.Build.unaligned: Supplied argument doesn't require alignment"
+unaligned :: Alignment -> MethodDecl
+unaligned a = mdecl $ Unaligned a
+
+unalignedPtr :: Alignment -> MethodDecl -> MethodDecl
+unalignedPtr a (Instr (OpCode oc)) | supportsUnaligned oc = mdecl $ UnalignedPtr a oc
+unalignedPtr _ _                                          = error $ "Language.Cil.Build.unaligned: Supplied argument doesn't require alignment"
 
 -- Helper functions
 
