@@ -57,6 +57,7 @@ module Language.Cil.Build (
   , ldlocN
   , ldloca
   , ldlocaN
+  , ldnull
   , ldsfld
   , ldsflda
   , ldstr
@@ -270,6 +271,9 @@ ldloca = mdecl . Ldloca
 
 ldlocaN :: LocalName -> MethodDecl
 ldlocaN nm = mdecl $ LdlocaN nm
+
+ldnull :: MethodDecl
+ldnull = mdecl $ Ldnull
 
 ldsfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 ldsfld p a t f = mdecl $ Ldsfld p a t f

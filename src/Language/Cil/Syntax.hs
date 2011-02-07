@@ -303,6 +303,7 @@ data OpCode
   | LdlocN DottedName  -- ^ Pushes value of local variable, specified by name, to the stack.
   | Ldloca Offset      -- ^ Pushes address of local variable, specified by index, to the stack.
   | LdlocaN DottedName -- ^ Pushes address of local variable, specified by name, to the stack.
+  | Ldnull             -- ^ Pushes a size-agnostic null reference on the stack.
   | Ldsfld
       { fieldType    :: PrimitiveType  -- ^ Type of the field.
       , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.
