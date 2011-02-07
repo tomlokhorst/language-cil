@@ -82,6 +82,9 @@ module Language.Cil.Build (
   , pop
   , rem
   , ret
+  , shl
+  , shr
+  , shr_un
   , stelem_i
   , stelem_i1
   , stelem_i2
@@ -377,6 +380,15 @@ rem = mdecl $ Rem
 
 ret :: MethodDecl
 ret = mdecl $ Ret
+
+shl :: MethodDecl
+shl = mdecl $ Shl
+
+shr :: MethodDecl
+shr = mdecl $ Shr
+
+shr_un :: MethodDecl
+shr_un = mdecl $ Shr_un
 
 stelem_i :: MethodDecl
 stelem_i = mdecl $ Stelem_i

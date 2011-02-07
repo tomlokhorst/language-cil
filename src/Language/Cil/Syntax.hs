@@ -344,6 +344,9 @@ data OpCode
   | Pop                -- ^ Pops the top of the stack.
   | Rem                -- ^ Pops 2 values, devides the first value by the second value, pushes the remainder.
   | Ret                -- ^ Returns from the current method. Pushes top of the stack to the top of the callers stack (if stack is not empty).
+  | Shl                -- ^ Pops 2 values, shifts the first to the left by the number of bits specified by the second, pushes the result.
+  | Shr                -- ^ Pops 2 values, shifts the first to the right by the number of bits specified by the second (with sign extension), pushes the result.
+  | Shr_un             -- ^ Pops 2 values, shifts the first to the right by the number of bits specified by the second (without sign extension), pushes the result.
   | Stelem_i           -- ^ Pops an array reference, an index, and a native integer. Stores the integer in the array.
   | Stelem_i1          -- ^ Pops an array reference, an index, and an 8-bit integer. Stores the integer in the array.
   | Stelem_i2          -- ^ Pops an array reference, an index, and a 16-bit integer. Stores the integer in the array.
