@@ -265,6 +265,19 @@ data OpCode
   | Ldc_i8 Integer     -- ^ Loads the supplied 64-bit integer onto the stack.
   | Ldc_r4 Float       -- ^ Loads the supplied 32-bit float onto the stack.
   | Ldc_r8 Double      -- ^ Loads the supplied 64-bit double onto the stack.
+  | Ldelem_i           -- ^ Pops an array reference and an index. Pushes the native integer in the specified slot of the array.
+  | Ldelem_i1          -- ^ Pops an array reference and an index. Pushes the 8-bit integer in the specified slot of the array.
+  | Ldelem_i2          -- ^ Pops an array reference and an index. Pushes the 16-bit integer in the specified slot of the array.
+  | Ldelem_i4          -- ^ Pops an array reference and an index. Pushes the 32-bit integer in the specified slot of the array.
+  | Ldelem_i8          -- ^ Pops an array reference and an index. Pushes the 64-bit integer in the specified slot of the array.
+  | Ldelem_u1          -- ^ Pops an array reference and an index. Pushes the unsigned 8-bit integer in the specified slot of the array.
+  | Ldelem_u2          -- ^ Pops an array reference and an index. Pushes the unsigned 16-bit integer in the specified slot of the array.
+  | Ldelem_u4          -- ^ Pops an array reference and an index. Pushes the unsigned 32-bit integer in the specified slot of the array.
+  | Ldelem_u8          -- ^ Pops an array reference and an index. Pushes the unsigned 64-bit integer in the specified slot of the array.
+  | Ldelem_r4          -- ^ Pops an array reference and an index. Pushes the float in the specified slot of the array.
+  | Ldelem_r8          -- ^ Pops an array reference and an index. Pushes the double in the specified slot of the array.
+  | Ldelem_ref         -- ^ Pops an array reference and an index. Pushes the object reference in the specified slot of the array.
+  | Ldelema            -- ^ Pops an array reference and an index. Pushes the address of the specified slot of the array.
   | Ldfld
       { fieldType    :: PrimitiveType  -- ^ Type of the field.
       , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.
@@ -295,6 +308,7 @@ data OpCode
   | Ldind_u1           -- ^ Pops an address, pushes the 8-bit unsigned integer stored at the address as a 32-bit integer.
   | Ldind_u2           -- ^ Pops an address, pushes the 16-bit unsigned integer stored at the address as a 32-bit integer.
   | Ldind_u4           -- ^ Pops an address, pushes the 32-bit unsigned integer stored at the address as a 32-bit integer.
+  | Ldlen              -- ^ Pops an array reference, pushes the native unsigned integer length of the array.
   | Ldloc Offset       -- ^ Pushes value of local variable, specified by index, to the stack.
   | Ldloc_0            -- ^ Pushes 0th local variable to the stack.
   | Ldloc_1            -- ^ Pushes 1th local variable to the stack.
@@ -325,10 +339,19 @@ data OpCode
       , typeName     :: TypeName         -- ^ Name of the type of which the constructor is a member.
       , paramTypes   :: [PrimitiveType]  -- ^ Types of the formal paramters of the constructor.
       } -- ^ Creates a new object or instance of a value type. Pops /n/ values, calls the specified constructor, pushes a new object reference onto the stack (where /n/ is the number of formal parameters of the constructor).
+  | Newarr PrimitiveType -- ^ Creates a new one-dimensional array. Pops a native int or int32, pushes a new array with that length.
   | Nop                -- ^ No operation is performed.
   | Pop                -- ^ Pops the top of the stack.
   | Rem                -- ^ Pops 2 values, devides the first value by the second value, pushes the remainder.
   | Ret                -- ^ Returns from the current method. Pushes top of the stack to the top of the callers stack (if stack is not empty).
+  | Stelem_i           -- ^ Pops an array reference, an index, and a native integer. Stores the integer in the array.
+  | Stelem_i1          -- ^ Pops an array reference, an index, and an 8-bit integer. Stores the integer in the array.
+  | Stelem_i2          -- ^ Pops an array reference, an index, and a 16-bit integer. Stores the integer in the array.
+  | Stelem_i4          -- ^ Pops an array reference, an index, and a 32-bit integer. Stores the integer in the array.
+  | Stelem_i8          -- ^ Pops an array reference, an index, and a 64-bit integer. Stores the integer in the array.
+  | Stelem_r4          -- ^ Pops an array reference, an index, and a float. Stores the float in the array.
+  | Stelem_r8          -- ^ Pops an array reference, an index, and a double integer. Stores the double in the array.
+  | Stelem_ref          -- ^ Pops an array reference, an index, and an object reference. Stores the object reference in the array.
   | Stfld
       { fieldType    :: PrimitiveType  -- ^ Type of the field.
       , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.

@@ -39,6 +39,18 @@ module Language.Cil.Build (
   , ldc_r4
   , ldc_r8
   , ldchar
+  , ldelem_i
+  , ldelem_i1
+  , ldelem_i2
+  , ldelem_i4
+  , ldelem_i8
+  , ldelem_u1
+  , ldelem_u2
+  , ldelem_u4
+  , ldelem_u8
+  , ldelem_r4
+  , ldelem_r8
+  , ldelem_ref
   , ldfld
   , ldflda
   , ldftn
@@ -53,6 +65,7 @@ module Language.Cil.Build (
   , ldind_u1
   , ldind_u2
   , ldind_u4
+  , ldlen
   , ldloc
   , ldlocN
   , ldloca
@@ -63,11 +76,20 @@ module Language.Cil.Build (
   , ldstr
   , mul
   , neg
+  , newarr
   , newobj
   , nop
   , pop
   , rem
   , ret
+  , stelem_i
+  , stelem_i1
+  , stelem_i2
+  , stelem_i4
+  , stelem_i8
+  , stelem_r4
+  , stelem_r8
+  , stelem_ref
   , stfld
   , stind_i
   , stind_i1
@@ -217,6 +239,45 @@ ldc_r8 = mdecl . Ldc_r8
 ldchar :: Char -> MethodDecl
 ldchar c = ldc_i4 (toInteger $ ord c)
 
+ldelem_i :: MethodDecl
+ldelem_i = mdecl $ Ldelem_i
+
+ldelem_i1 :: MethodDecl
+ldelem_i1 = mdecl $ Ldelem_i1
+
+ldelem_i2 :: MethodDecl
+ldelem_i2 = mdecl $ Ldelem_i2
+
+ldelem_i4 :: MethodDecl
+ldelem_i4 = mdecl $ Ldelem_i4
+
+ldelem_i8 :: MethodDecl
+ldelem_i8 = mdecl $ Ldelem_i8
+
+ldelem_u1 :: MethodDecl
+ldelem_u1 = mdecl $ Ldelem_u1
+
+ldelem_u2 :: MethodDecl
+ldelem_u2 = mdecl $ Ldelem_u2
+
+ldelem_u4 :: MethodDecl
+ldelem_u4 = mdecl $ Ldelem_u4
+
+ldelem_u8 :: MethodDecl
+ldelem_u8 = mdecl $ Ldelem_u8
+
+ldelem_r4 :: MethodDecl
+ldelem_r4 = mdecl $ Ldelem_r4
+
+ldelem_r8 :: MethodDecl
+ldelem_r8 = mdecl $ Ldelem_r8
+
+ldelem_ref :: MethodDecl
+ldelem_ref = mdecl $ Ldelem_ref
+
+ldelema :: MethodDecl
+ldelema = mdecl $ Ldelema
+
 ldfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 ldfld p a t f = mdecl $ Ldfld p a t f
 
@@ -259,6 +320,9 @@ ldind_u2 = mdecl $ Ldind_u2
 ldind_u4 :: MethodDecl
 ldind_u4 = mdecl $ Ldind_u4
 
+ldlen :: MethodDecl
+ldlen = mdecl $ Ldlen
+
 ldloc :: Offset -> MethodDecl
 ldloc 0 = mdecl $ Ldloc_0
 ldloc 1 = mdecl $ Ldloc_1
@@ -293,6 +357,9 @@ mul = mdecl $ Mul
 neg :: MethodDecl
 neg = mdecl $ Neg
 
+newarr :: PrimitiveType -> MethodDecl
+newarr t = mdecl $ Newarr t
+
 -- | Creates a new object.
 -- Note that this function assumes the constructor returns Void.
 -- If this is not the case, call the Newobj constructor manually.
@@ -310,6 +377,30 @@ rem = mdecl $ Rem
 
 ret :: MethodDecl
 ret = mdecl $ Ret
+
+stelem_i :: MethodDecl
+stelem_i = mdecl $ Stelem_i
+
+stelem_i1 :: MethodDecl
+stelem_i1 = mdecl $ Stelem_i1
+
+stelem_i2 :: MethodDecl
+stelem_i2 = mdecl $ Stelem_i2
+
+stelem_i4 :: MethodDecl
+stelem_i4 = mdecl $ Stelem_i4
+
+stelem_i8 :: MethodDecl
+stelem_i8 = mdecl $ Stelem_i8
+
+stelem_r4 :: MethodDecl
+stelem_r4 = mdecl $ Stelem_r4
+
+stelem_r8 :: MethodDecl
+stelem_r8 = mdecl $ Stelem_r8
+
+stelem_ref :: MethodDecl
+stelem_ref = mdecl $ Stelem_ref
 
 stfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 stfld p a t f = mdecl $ Stfld p a t f

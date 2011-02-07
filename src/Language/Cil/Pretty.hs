@@ -204,6 +204,16 @@ instance Pretty OpCode where
   pr (Ldc_i8 x)            = ("ldc.i8 " ++) . shows x
   pr (Ldc_r4 x)            = ("ldc.r4 " ++) . shows x
   pr (Ldc_r8 x)            = ("ldc.r8 " ++) . shows x
+  pr (Ldelem_i)            = ("ldelem.i " ++)
+  pr (Ldelem_i1)           = ("ldelem.i1 " ++)
+  pr (Ldelem_i2)           = ("ldelem.i2 " ++)
+  pr (Ldelem_i4)           = ("ldelem.i4 " ++)
+  pr (Ldelem_i8)           = ("ldelem.i8 " ++)
+  pr (Ldelem_u1)           = ("ldelem.u1 " ++)
+  pr (Ldelem_u2)           = ("ldelem.u2 " ++)
+  pr (Ldelem_u4)           = ("ldelem.u4 " ++)
+  pr (Ldelem_u8)           = ("ldelem.u8 " ++)
+  pr (Ldelem_ref)          = ("ldelem.ref " ++)
   pr (Ldfld t a c f)       = ("ldfld " ++) . pr t . sp . prFld a c f
   pr (Ldflda t a c f)      = ("ldflda " ++) . pr t . sp . prFld a c f
   pr (Ldftn t a c m ps)    = ("ldftn " ++) . pr t . sp . prCall a c m ps
@@ -218,6 +228,7 @@ instance Pretty OpCode where
   pr (Ldind_u1)            = ("ldind.u1 " ++)
   pr (Ldind_u2)            = ("ldind.u2 " ++)
   pr (Ldind_u4)            = ("ldind.u4 " ++)
+  pr (Ldlen)               = ("ldlen " ++)
   pr (Ldloc x)             = ("ldloc " ++) . shows x
   pr (Ldloc_0)             = ("ldloc.0 " ++)
   pr (Ldloc_1)             = ("ldloc.1 " ++)
@@ -232,12 +243,19 @@ instance Pretty OpCode where
   pr (Ldstr s)             = ("ldstr " ++) . shows s
   pr (Mul)                 = ("mul" ++)
   pr (Neg)                 = ("neg" ++)
+  pr (Newarr t)            = ("newarr " ++) . pr t
   pr (Newobj t a c ps)     = ("newobj instance " ++) . pr t . sp
                                . prNewobj a c ps
   pr (Nop)                 = ("nop" ++)
   pr (Pop)                 = ("pop" ++)
   pr (Rem)                 = ("rem" ++)
   pr (Ret)                 = ("ret" ++)
+  pr (Stelem_i)            = ("stelem.i " ++)
+  pr (Stelem_i1)           = ("stelem.i1 " ++)
+  pr (Stelem_i2)           = ("stelem.i2 " ++)
+  pr (Stelem_i4)           = ("stelem.i4 " ++)
+  pr (Stelem_i8)           = ("stelem.i8 " ++)
+  pr (Stelem_ref)          = ("stelem.ref " ++)
   pr (Stfld t a c f)       = ("stfld " ++) . pr t . sp . prFld a c f
   pr (Stind_i)             = ("stind.i " ++)
   pr (Stind_i1)            = ("stind.i1 " ++)
