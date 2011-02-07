@@ -179,6 +179,7 @@ instance Pretty OpCode where
   pr (Ceq)                 = ("ceq" ++)
   pr (Cge)                 = ("cge" ++)
   pr (Cgt)                 = ("cgt" ++)
+  pr (Ckfinite)            = ("ckfinite" ++)
   pr (Cle)                 = ("cle" ++)
   pr (Clt)                 = ("clt" ++)
   pr (Dup)                 = ("dup" ++)
