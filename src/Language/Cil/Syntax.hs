@@ -360,6 +360,8 @@ data OpCode
   | Unaligned Alignment -- ^ Performs subsequent load or store operation under a weaker-than-usual alignment precondition.
   | UnalignedPtr  Alignment OpCode -- ^ Performs provided load or store operation under a weaker-than-usual alignment precondition.
   | Unbox PrimitiveType  -- ^ Pops 1 value, unboxes object reference, pushes value type.
+  | Volatile           -- ^ Marks subsequent pointer reference as volatile, i.e. the value it points at can be modified from another thread.
+  | VolatilePtr OpCode -- ^ Marks provided pointer reference as volatile, i.e. the value it points at can be modified from another thread.
   deriving Show
 
 -- | Calling convention for method calls.
