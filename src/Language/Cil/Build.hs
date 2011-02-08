@@ -22,6 +22,7 @@ module Language.Cil.Build (
   , blt
   , box
   , br
+  , break
   , brfalse
   , brtrue
   , call
@@ -135,7 +136,7 @@ module Language.Cil.Build (
 
 -- Ambiguous occurences of functions can be resolved when by importing this
 -- module qualified, or by hiding Prelude functions.
-import Prelude hiding (rem, tail, and, or, not)
+import Prelude hiding (rem, tail, and, or, not, break)
 import Data.Char (ord)
 
 import Language.Cil.Syntax
@@ -188,6 +189,9 @@ unbox = mdecl . Unbox
 
 br :: Label -> MethodDecl
 br = mdecl . Br
+
+break :: MethodDecl
+break = mdecl $ Break
 
 brfalse :: Label -> MethodDecl
 brfalse = mdecl . Brfalse

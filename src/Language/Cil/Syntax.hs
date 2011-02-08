@@ -220,6 +220,7 @@ data OpCode
   | Blt Label          -- ^ Pops 2 values, if first value is less than second value, jump to specified label.
   | Box PrimitiveType  -- ^ Pops 1 value, boxes value type, pushes object reference.
   | Br Label           -- ^ Unconditionally jump to specified label.
+  | Break              -- ^ Inform a debugger that a breakpoint has been reached.
   | Brfalse Label      -- ^ Pops 1 value, if value is false, null reference or zero, jump to specified label.
   | Brtrue Label       -- ^ Pops 1 value, if value is true, not null or non-zero, jump to specified label.
   | Call
