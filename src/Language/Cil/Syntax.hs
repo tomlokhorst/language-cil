@@ -212,6 +212,8 @@ data Instr
 -- for a more complete list with documentation.
 data OpCode
   = Add                -- ^ Pops 2 values, adds the values, pushes result.
+  | Add_ovf            -- ^ Pops 2 values, adds the values with a signed overflow check, pushes result.
+  | Add_ovf_un         -- ^ Pops 2 values, adds the values with an unsigned overflow check, pushes result.
   | And                -- ^ Pops 2 values, do bitwise AND between the values, pushes result.
   | Beq Label          -- ^ Pops 2 values, if first value is equal to second value, jump to specified label.
   | Bge Label          -- ^ Pops 2 values, if first value is greater or equal to second value, jump to specified label.
@@ -333,6 +335,8 @@ data OpCode
       } -- ^ Pops type reference, find address of specified field on the type, pushes address to the stack.
   | Ldstr String       -- ^ Pushes an object reference to the specified string constant.
   | Mul                -- ^ Pops 2 values, multiplies the values, pushes result.
+  | Mul_ovf            -- ^ Pops 2 values, multiplies the values with a signed overflow check, pushes result.
+  | Mul_ovf_un         -- ^ Pops 2 values, multiplies the values with an unsigned overflow check, pushes result.
   | Neg                -- ^ Pops 1 value, negates the value, pushes the value.
   | Newobj
       { returnType   :: PrimitiveType    -- ^ Return type of the constructor (almost alway Void).
@@ -384,7 +388,9 @@ data OpCode
       , typeName     :: TypeName       -- ^ Name of the type of which the field is a member.
       , fieldName    :: FieldName      -- ^ Name of the field.
       } -- ^ Replaces the value stored in the static field of a type with a new value.
-  | Sub                -- ^ Pops 2 values, substracts second value from the first value, pushes result.
+  | Sub                -- ^ Pops 2 values, subtracts second value from the first value, pushes result.
+  | Sub_ovf            -- ^ Pops 2 values, subtracts second value from the first value with a signed overflow check, pushes result.
+  | Sub_ovf_un         -- ^ Pops 2 values, subtracts second value from the first value with an unsigned overflow check, pushes result.
   | Tail               -- ^ Performs subsequent call as a tail call, by replacing current stack frame with callee stack frame.
   | Tailcall OpCode    -- ^ Performs provided call as a tail call, by replacing current stack frame with callee stack frame.
   | Throw              -- ^ Pops an object reference from the stack and throws it as an exception.
