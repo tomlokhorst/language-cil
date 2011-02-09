@@ -22,6 +22,7 @@ module Language.Cil.Build (
   , blt
   , box
   , br
+  , break
   , brfalse
   , brtrue
   , call
@@ -132,7 +133,7 @@ module Language.Cil.Build (
 
 -- If someone uses the `rem' or `tail' opcode, they can deal with the ambiguous
 -- occurence themselves!
-import Prelude hiding (rem, tail, and, or, not)
+import Prelude hiding (rem, tail, and, or, not, break)
 import Data.Char (ord)
 
 import Language.Cil.Syntax
@@ -185,6 +186,9 @@ unbox = mdecl . Unbox
 
 br :: Label -> MethodDecl
 br = mdecl . Br
+
+break :: MethodDecl
+break = mdecl $ Break
 
 brfalse :: Label -> MethodDecl
 brfalse = mdecl . Brfalse

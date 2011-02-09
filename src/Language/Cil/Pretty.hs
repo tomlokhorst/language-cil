@@ -170,6 +170,7 @@ instance Pretty OpCode where
   pr (Blt l)               = ("blt " ++) . (l ++)
   pr (Box t)               = ("box " ++) . pr t
   pr (Br l)                = ("br " ++) . (l ++)
+  pr (Break)               = ("break" ++)
   pr (Brfalse l)           = ("brfalse " ++) . (l ++)
   pr (Brtrue l)            = ("brtrue " ++) . (l ++)
   pr (Call ccs t a c m ps) = ("call " ++) . prList ccs . pr t . sp
