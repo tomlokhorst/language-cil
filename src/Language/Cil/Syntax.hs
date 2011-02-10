@@ -247,6 +247,8 @@ data OpCode
   | Cle                -- ^ Pops 2 values and compares them.
   | Clt                -- ^ Pops 2 values and compares them.
   | Dup                -- ^ Pops 1 value, copies it, pushes the same value twise.
+  | Div                -- ^ Pops 2 values, divides the first by the second, pushes the result.
+  | Div_un             -- ^ Pops 2 integers, divides the first by the second when consider as unsigned integers, pushes the result.
   | Isinst TypeName    -- ^ Tests if an object reference is an instance of class, returning either a null reference or an instance of that class or interface.
   | Ldarg Offset       -- ^ Loads /n/-th argument to current method onto stack.
   | Ldarg_0            -- ^ Loads 0th argument to current method onto stack.
@@ -350,7 +352,8 @@ data OpCode
   | Not                -- ^ Pops 1 value, does a bitwise complement, pushes result.
   | Or                 -- ^ Pops 2 values, do bitwise OR between the values, pushes result.
   | Pop                -- ^ Pops the top of the stack.
-  | Rem                -- ^ Pops 2 values, devides the first value by the second value, pushes the remainder.
+  | Rem                -- ^ Pops 2 values, divides the first value by the second value, pushes the remainder.
+  | Rem_un             -- ^ Pops 2 integers, divides the first by the second when considered as unsigned integers, pushes the remainder.
   | Ret                -- ^ Returns from the current method. Pushes top of the stack to the top of the callers stack (if stack is not empty).
   | Shl                -- ^ Pops 2 values, shifts the first to the left by the number of bits specified by the second, pushes the result.
   | Shr                -- ^ Pops 2 values, shifts the first to the right by the number of bits specified by the second (with sign extension), pushes the result.

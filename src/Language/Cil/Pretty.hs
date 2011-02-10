@@ -162,6 +162,8 @@ instance Pretty Local where
 
 instance Pretty OpCode where
   pr (Add)                 = ("add" ++)
+  pr (Add_ovf)             = ("add.ovf" ++)
+  pr (Add_ovf_un)          = ("add.ovf.un" ++)
   pr (And)                 = ("and" ++)
   pr (Beq l)               = ("beq " ++) . (l ++)
   pr (Bge l)               = ("bge " ++) . (l ++)
@@ -183,6 +185,8 @@ instance Pretty OpCode where
   pr (Ckfinite)            = ("ckfinite" ++)
   pr (Cle)                 = ("cle" ++)
   pr (Clt)                 = ("clt" ++)
+  pr (Div)                 = ("div" ++)
+  pr (Div_un)              = ("div.un" ++)
   pr (Dup)                 = ("dup" ++)
   pr (Isinst nm)           = ("isinst " ++) . prName nm
   pr (Ldarg x)             = ("ldarg " ++) . shows x
@@ -244,6 +248,8 @@ instance Pretty OpCode where
   pr (Ldsflda t a c f)     = ("ldsflda " ++) . pr t . sp . prFld a c f
   pr (Ldstr s)             = ("ldstr " ++) . shows s
   pr (Mul)                 = ("mul" ++)
+  pr (Mul_ovf)             = ("mul.ovf" ++)
+  pr (Mul_ovf_un)          = ("mul.ovf.un" ++)
   pr (Neg)                 = ("neg" ++)
   pr (Newarr t)            = ("newarr " ++) . pr t
   pr (Newobj t a c ps)     = ("newobj instance " ++) . pr t . sp
@@ -253,6 +259,7 @@ instance Pretty OpCode where
   pr (Or)                  = ("or" ++)
   pr (Pop)                 = ("pop" ++)
   pr (Rem)                 = ("rem" ++)
+  pr (Rem_un)              = ("rem.un" ++)
   pr (Ret)                 = ("ret" ++)
   pr (Shl)                 = ("shl" ++)
   pr (Shr)                 = ("shr" ++)
@@ -280,6 +287,8 @@ instance Pretty OpCode where
   pr (StlocN nm)           = ("stloc " ++) . prName nm
   pr (Stsfld t a c f)      = ("stsfld " ++) . pr t . sp . prFld a c f
   pr (Sub)                 = ("sub" ++)
+  pr (Sub_ovf)             = ("sub.ovf" ++)
+  pr (Sub_ovf_un)          = ("sub.ovf.un" ++)
   pr (Tail)                = ("tail." ++)
   pr (Tailcall opcode)     = ("tail. " ++) . pr opcode
   pr (Throw)               = ("throw" ++)

@@ -14,6 +14,8 @@ module Language.Cil.Build (
 
   -- * mdecl functions
   , add
+  , add_ovf
+  , add_ovf_un
   , and
   , beq
   , bge
@@ -34,6 +36,8 @@ module Language.Cil.Build (
   , cle
   , clt 
   , dup
+  , div
+  , div_un
   , isinst
   , ldarg
   , ldargN
@@ -78,6 +82,8 @@ module Language.Cil.Build (
   , ldsflda
   , ldstr
   , mul
+  , mul_ovf
+  , mul_ovf_un
   , neg
   , newarr
   , newobj
@@ -86,6 +92,7 @@ module Language.Cil.Build (
   , or
   , pop
   , rem
+  , rem_un
   , ret
   , shl
   , shr
@@ -111,6 +118,8 @@ module Language.Cil.Build (
   , stlocN
   , stsfld
   , sub
+  , sub_ovf
+  , sub_ovf_un
   , tail
   , tailcall
   , throw
@@ -133,7 +142,7 @@ module Language.Cil.Build (
 
 -- If someone uses the `rem' or `tail' opcode, they can deal with the ambiguous
 -- occurence themselves!
-import Prelude hiding (rem, tail, and, or, not, break)
+import Prelude hiding (rem, tail, and, or, not, break, div)
 import Data.Char (ord)
 
 import Language.Cil.Syntax
@@ -159,6 +168,12 @@ maxStack x = Directive (MaxStack x)
 
 add :: MethodDecl
 add = mdecl $ Add
+
+add_ovf :: MethodDecl
+add_ovf = mdecl $ Add_ovf
+
+add_ovf_un :: MethodDecl
+add_ovf_un = mdecl $ Add_ovf_un
 
 and :: MethodDecl
 and = mdecl $ And
@@ -214,6 +229,12 @@ ckfinite = mdecl $ Ckfinite
 
 dup :: MethodDecl
 dup = mdecl $ Dup
+
+div :: MethodDecl
+div = mdecl $ Div
+
+div_un :: MethodDecl
+div_un = mdecl $ Div_un
 
 isinst :: TypeName -> MethodDecl
 isinst = mdecl . Isinst
@@ -370,6 +391,12 @@ ldstr = mdecl . Ldstr
 mul :: MethodDecl
 mul = mdecl $ Mul
 
+mul_ovf :: MethodDecl
+mul_ovf = mdecl $ Mul_ovf
+
+mul_ovf_un :: MethodDecl
+mul_ovf_un = mdecl $ Mul_ovf_un
+
 neg :: MethodDecl
 neg = mdecl $ Neg
 
@@ -396,6 +423,9 @@ pop = mdecl $ Pop
 
 rem :: MethodDecl
 rem = mdecl $ Rem
+
+rem_un :: MethodDecl
+rem_un = mdecl $ Rem_un
 
 ret :: MethodDecl
 ret = mdecl $ Ret
@@ -475,6 +505,12 @@ stsfld p a t f = mdecl $ Stsfld p a t f
 
 sub :: MethodDecl
 sub = mdecl $ Sub
+
+sub_ovf :: MethodDecl
+sub_ovf = mdecl $ Sub_ovf
+
+sub_ovf_un :: MethodDecl
+sub_ovf_un = mdecl $ Sub_ovf_un
 
 tail :: MethodDecl
 tail = mdecl $ Tail
