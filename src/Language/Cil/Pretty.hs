@@ -138,13 +138,10 @@ instance Pretty ParamAttr where
 
 instance Pretty MethodDecl where
   pr (Directive d) = pr d
-  pr (Instr i)     = pr i
+  pr (Label l)     = ident . (l ++) . (":" ++) . nl
+  pr (OpCode oc)   = ident . ident . pr oc . nl
   pr (Comment s)   = ident . ident . ("// " ++) . (s ++) . nl
 
-instance Pretty Instr where
-  pr (OpCode oc)      = ident . ident . pr oc . nl
-  pr (LabOpCode l oc) = ident . (l ++) . (":" ++) . nl
-                              . ident . ident . pr oc . nl
 
 instance Pretty Directive where
   pr (EntryPoint)    = ident . ident . (".entrypoint" ++) . nl

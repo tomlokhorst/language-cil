@@ -31,7 +31,7 @@ myEven = Method [MaStatic, MaPublic] Bool "even" [Param Nothing Int32 "x"]
   , ldc_i4 1
   , ret
   , label "else"
-  $ ldarg 0
+  , ldarg 0
   , ldc_i4 1
   , sub
   , tailcall
@@ -46,7 +46,7 @@ myOdd = Method [MaStatic, MaPublic] Bool "odd" [Param Nothing Int32 "x"]
   , ldc_i4 0
   , ret
   , label "else"
-  $ ldarg 0
+  , ldarg 0
   , ldc_i4 1
   , sub
   , tailcall
