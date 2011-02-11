@@ -3,28 +3,28 @@
 --
 
 module Language.Cil.Analysis (
-    instructions
+    opcodes
   ) where
 
 import Language.Cil.Syntax
 
 class Ast a where
-  -- A concatenated list of all instructions.
-  instructions :: a -> [Instr]
+  -- A concatenated list of all opcodes.
+  opcodes :: a -> [OpCode]
 
 instance Ast Assembly where
-  instructions (Assembly _ _ td) = concatMap instructions td
+  opcodes (Assembly _ _ td) = concatMap opcodes td
 
 instance Ast TypeDef where
-  instructions (Class _ _ _ _ cd)      = concatMap instructions cd
-  instructions (GenericClass _ _ _ cd) = concatMap instructions cd
+  opcodes (Class _ _ _ _ cd)      = concatMap opcodes cd
+  opcodes (GenericClass _ _ _ cd) = concatMap opcodes cd
 
 instance Ast ClassDecl where
-  instructions (FieldDef  _)  = []
-  instructions (MethodDef md) = instructions md
-  instructions (TypeDef td)   = instructions td
+  opcodes (FieldDef  _)  = []
+  opcodes (MethodDef md) = opcodes md
+  opcodes (TypeDef td)   = opcodes td
 
 instance Ast MethodDef where
-  instructions (Constructor _ _ _ md) = [ i | Instr i <- md ]
-  instructions (Method _ _ _ _ md)    = [ i | Instr i <- md ]
+  opcodes (Constructor _ _ _ md) = [ o | OpCode o <- md ]
+  opcodes (Method _ _ _ _ md)    = [ o | OpCode o <- md ]
 

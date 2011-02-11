@@ -55,7 +55,7 @@ myMain = Method [MaStatic, MaPublic] Void "main" []
   , stlocN "x"
 
   , label "loop"
-  $ dup
+  , dup
   , dup
   , ldlocN "i"
   , ldelem_i4
