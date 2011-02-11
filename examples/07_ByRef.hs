@@ -33,7 +33,7 @@ myMain = Method [MaStatic, MaPublic] Void "main" []
   ]
 
 updateRef :: MethodDef
-updateRef = Method [MaStatic, MaPublic] Void "updateRef" [Param (ByRef $ ReferenceType "" "Haskell.Ehc.Hello/MyClass") "c"]
+updateRef = Method [MaStatic, MaPublic] Void "updateRef" [Param Nothing (ByRef $ ReferenceType "" "Haskell.Ehc.Hello/MyClass") "c"]
   [ ldarg 0
   , ldc_i4 3
   , newobj "" "Haskell.Ehc.Hello/MyClass" [Int32]
@@ -49,7 +49,7 @@ value :: FieldDef
 value = Field [FaPublic] Int32 "Value"
 
 ctor :: MethodDef
-ctor = Constructor [MaPublic] Void [Param Int32 "value"]
+ctor = Constructor [MaPublic] Void [Param Nothing Int32 "value"]
   [ ldarg 0
   , call [CcInstance] Void "" "object" ".ctor" []
   , ldarg 0
