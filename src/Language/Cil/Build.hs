@@ -124,7 +124,10 @@ module Language.Cil.Build (
   , tailcall
   , throw
   , unaligned
+  , unalignedPtr
   , unbox
+  , volatile
+  , volatilePtr
   , xor
 
   -- * Convenient AST functions
@@ -140,8 +143,8 @@ module Language.Cil.Build (
   , mscorlibRef
   ) where
 
--- If someone uses the `rem' or `tail' opcode, they can deal with the ambiguous
--- occurence themselves!
+-- Ambiguous occurences of functions can be resolved when by importing this
+-- module qualified, or by hiding Prelude functions.
 import Prelude hiding (rem, tail, and, or, not, break, div)
 import Data.Char (ord)
 
@@ -522,9 +525,19 @@ tailcall _                   = error $ "Language.Cil.Build.tailcall: Can't tailc
 throw :: MethodDecl
 throw = mdecl $ Throw
 
-unaligned :: Alignment -> MethodDecl -> MethodDecl
-unaligned a (Instr (OpCode oc)) | supportsUnaligned oc = Instr (OpCode (Unaligned a oc))
-unaligned _ _                                          = error $ "Language.Cil.Build.unaligned: Supplied argument doesn't require alignment"
+unaligned :: Alignment -> MethodDecl
+unaligned a = mdecl $ Unaligned a
+
+unalignedPtr :: Alignment -> MethodDecl -> MethodDecl
+unalignedPtr a (Instr (OpCode oc)) | supportsUnaligned oc = mdecl $ UnalignedPtr a oc
+unalignedPtr _ _                                          = error $ "Language.Cil.Build.unalignedPtr: Supplied argument doesn't require alignment"
+
+volatile :: MethodDecl
+volatile = mdecl $ Volatile
+
+volatilePtr :: MethodDecl -> MethodDecl
+volatilePtr (Instr (OpCode oc)) | supportsVolatile oc = mdecl $ VolatilePtr oc
+volatilePtr _                                         = error $ "Language.Cil.Build.volatilePtr: Supplied argument cannot be marked volatile"
 
 xor :: MethodDecl
 xor = mdecl $ Xor
@@ -535,33 +548,41 @@ mdecl :: OpCode -> MethodDecl
 mdecl i = Instr $ OpCode i
 
 supportsUnaligned :: OpCode -> Bool
-supportsUnaligned Ldind_i   = True
-supportsUnaligned Ldind_i1  = True
-supportsUnaligned Ldind_i2  = True
-supportsUnaligned Ldind_i4  = True
-supportsUnaligned Ldind_i8  = True
-supportsUnaligned Ldind_r4  = True
-supportsUnaligned Ldind_r8  = True
-supportsUnaligned Ldind_ref = True
-supportsUnaligned Ldind_u1  = True
-supportsUnaligned Ldind_u2  = True
-supportsUnaligned Ldind_u4  = True
-supportsUnaligned Stind_i   = True
-supportsUnaligned Stind_i1  = True
-supportsUnaligned Stind_i2  = True
-supportsUnaligned Stind_i4  = True
-supportsUnaligned Stind_i8  = True
-supportsUnaligned Stind_r4  = True
-supportsUnaligned Stind_r8  = True
-supportsUnaligned Stind_ref = True
-supportsUnaligned (Ldfld _ _ _ _) = True
-supportsUnaligned (Stfld _ _ _ _) = True
+supportsUnaligned (VolatilePtr oc) = supportsPrefix oc
+supportsUnaligned oc               = supportsPrefix oc
+
+supportsVolatile :: OpCode -> Bool
+supportsVolatile (UnalignedPtr _ oc) = supportsPrefix oc
+supportsVolatile oc                  = supportsPrefix oc
+
+supportsPrefix :: OpCode -> Bool
+supportsPrefix Ldind_i   = True
+supportsPrefix Ldind_i1  = True
+supportsPrefix Ldind_i2  = True
+supportsPrefix Ldind_i4  = True
+supportsPrefix Ldind_i8  = True
+supportsPrefix Ldind_r4  = True
+supportsPrefix Ldind_r8  = True
+supportsPrefix Ldind_ref = True
+supportsPrefix Ldind_u1  = True
+supportsPrefix Ldind_u2  = True
+supportsPrefix Ldind_u4  = True
+supportsPrefix Stind_i   = True
+supportsPrefix Stind_i1  = True
+supportsPrefix Stind_i2  = True
+supportsPrefix Stind_i4  = True
+supportsPrefix Stind_i8  = True
+supportsPrefix Stind_r4  = True
+supportsPrefix Stind_r8  = True
+supportsPrefix Stind_ref = True
+supportsPrefix (Ldfld _ _ _ _) = True
+supportsPrefix (Stfld _ _ _ _) = True
 -- there are several cases for not-yet-supported opcodes
--- supportsUnaligned (Ldobj ...)
--- supportsUnaligned (Stobj ...)
--- supportsUnaligned (Initblk ...)
--- supportsUnaligned (Cpblk ...)
-supportsUnaligned _         = False
+-- supportsPrefix (Ldobj ...)
+-- supportsPrefix (Stobj ...)
+-- supportsPrefix (Initblk ...)
+-- supportsPrefix (Cpblk ...)
+supportsPrefix _         = False
 
 
 

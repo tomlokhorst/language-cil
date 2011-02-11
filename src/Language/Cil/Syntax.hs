@@ -398,8 +398,11 @@ data OpCode
   | Tail               -- ^ Performs subsequent call as a tail call, by replacing current stack frame with callee stack frame.
   | Tailcall OpCode    -- ^ Performs provided call as a tail call, by replacing current stack frame with callee stack frame.
   | Throw              -- ^ Pops an object reference from the stack and throws it as an exception.
-  | Unaligned Alignment OpCode -- ^ Performs the subsequent load or store operation under a weaker-than-usual alignment precondition.
+  | Unaligned Alignment -- ^ Performs subsequent load or store operation under a weaker-than-usual alignment precondition.
+  | UnalignedPtr  Alignment OpCode -- ^ Performs provided load or store operation under a weaker-than-usual alignment precondition.
   | Unbox PrimitiveType  -- ^ Pops 1 value, unboxes object reference, pushes value type.
+  | Volatile           -- ^ Marks subsequent pointer reference as volatile, i.e. the value it points at can be modified from another thread.
+  | VolatilePtr OpCode -- ^ Marks provided pointer reference as volatile, i.e. the value it points at can be modified from another thread.
   | Xor                -- ^ Pops 2 values, do bitwise XOR between the values, pushes result.
   deriving Show
 
