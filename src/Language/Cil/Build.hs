@@ -58,6 +58,7 @@ module Language.Cil.Build (
   , ldelem_r4
   , ldelem_r8
   , ldelem_ref
+  , ldelema
   , ldfld
   , ldflda
   , ldftn
