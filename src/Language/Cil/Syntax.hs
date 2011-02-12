@@ -30,7 +30,6 @@ module Language.Cil.Syntax (
   , Parameter     (..)
   , ParamAttr     (..)
   , MethodDecl    (..)
-  , Instr         (..)
   , Directive     (..)
   , Local         (..)
   , Label
@@ -184,7 +183,8 @@ data ParamAttr
 -- | Method declarations, i.e. the body of a method.
 data MethodDecl
   = Directive Directive
-  | Instr Instr
+  | OpCode OpCode
+  | Label Label
   | Comment String
   deriving Show
 
@@ -198,13 +198,6 @@ data Directive
 -- | Local variables used inside a method definition.
 data Local
   = Local PrimitiveType LocalName
-  deriving Show
-
--- | Single instruction in method definition.
--- Either an OpCode or a labelled OpCode.
-data Instr
-  = LabOpCode Label OpCode
-  | OpCode    OpCode
   deriving Show
 
 -- | CIL OpCodes inside a method definition.
@@ -240,6 +233,7 @@ data OpCode
       , methodName   :: MethodName      -- ^ Name of the method.
       , paramTypes   :: [PrimitiveType] -- ^ Types of the formal parameters of the method.
       } -- ^ Pops /n/ values, calls specified virtual method, pushes return value. (where /n/ is the number of formal parameters of the method).
+  | Castclass PrimitiveType -- ^ Pops 1 value, attempts to cast it to the specified type. If this succeeds, pushes the cast value. Otherwise throws an InvalidCastException.
   | Ceq                -- ^ Pops 2 values, if they are equal, pushes 1 to stack; otherwise, pushes 0.
   | Cge                -- ^ Pops 2 values and compares them.
   | Cgt                -- ^ Pops 2 values and compares them.

@@ -29,6 +29,7 @@ module Language.Cil.Build (
   , brtrue
   , call
   , callvirt
+  , castclass
   , ceq
   , cge
   , cgt
@@ -220,6 +221,9 @@ call ccs p l t m ps = mdecl $ Call ccs p l t m ps
 
 callvirt :: PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
 callvirt p l t m ps = mdecl $ CallVirt p l t m ps
+
+castclass :: PrimitiveType -> MethodDecl
+castclass = mdecl . Castclass
 
 ceq, cge, cgt, cle, clt :: MethodDecl
 ceq = mdecl $ Ceq

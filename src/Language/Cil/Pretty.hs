@@ -179,6 +179,7 @@ instance Pretty OpCode where
                                . prCall a c m ps
   pr (CallVirt t a c m ps) = ("callvirt instance " ++) . prsp t . sp
                                . prCall a c m ps
+  pr (Castclass t)         = ("castclass " ++) . pr t
   pr (Ceq)                 = ("ceq" ++)
   pr (Cge)                 = ("cge" ++)
   pr (Cgt)                 = ("cgt" ++)
