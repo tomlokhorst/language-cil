@@ -30,7 +30,6 @@ module Language.Cil.Syntax (
   , Parameter     (..)
   , ParamAttr     (..)
   , MethodDecl    (..)
-  , Instr         (..)
   , Directive     (..)
   , Local         (..)
   , Label
@@ -184,8 +183,9 @@ data ParamAttr
 -- | Method declarations, i.e. the body of a method.
 data MethodDecl
   = Directive Directive
-  | Instr Instr
-  | Comment String
+  | Label     Label
+  | OpCode    OpCode
+  | Comment   String
   deriving Show
 
 -- | Directive meta data for method definitions.
@@ -198,13 +198,6 @@ data Directive
 -- | Local variables used inside a method definition.
 data Local
   = Local PrimitiveType LocalName
-  deriving Show
-
--- | Single instruction in method definition.
--- Either an OpCode or a labelled OpCode.
-data Instr
-  = LabOpCode Label OpCode
-  | OpCode    OpCode
   deriving Show
 
 -- | CIL OpCodes inside a method definition.
