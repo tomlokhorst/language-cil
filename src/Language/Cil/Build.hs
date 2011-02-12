@@ -14,6 +14,9 @@ module Language.Cil.Build (
 
   -- * mdecl functions
   , add
+  , add_ovf
+  , add_ovf_un
+  , and
   , beq
   , bge
   , bgt
@@ -21,16 +24,18 @@ module Language.Cil.Build (
   , blt
   , box
   , br
+  , break
   , brfalse
   , brtrue
   , call
   , callvirt
   , ceq
-  , cge
   , cgt
-  , cle
+  , ckfinite
   , clt 
   , dup
+  , div
+  , div_un
   , isinst
   , ldarg
   , ldargN
@@ -39,6 +44,19 @@ module Language.Cil.Build (
   , ldc_r4
   , ldc_r8
   , ldchar
+  , ldelem_i
+  , ldelem_i1
+  , ldelem_i2
+  , ldelem_i4
+  , ldelem_i8
+  , ldelem_u1
+  , ldelem_u2
+  , ldelem_u4
+  , ldelem_u8
+  , ldelem_r4
+  , ldelem_r8
+  , ldelem_ref
+  , ldelema
   , ldfld
   , ldflda
   , ldftn
@@ -53,20 +71,39 @@ module Language.Cil.Build (
   , ldind_u1
   , ldind_u2
   , ldind_u4
+  , ldlen
   , ldloc
   , ldlocN
   , ldloca
   , ldlocaN
+  , ldnull
   , ldsfld
   , ldsflda
   , ldstr
   , mul
+  , mul_ovf
+  , mul_ovf_un
   , neg
+  , newarr
   , newobj
   , nop
+  , not
+  , or
   , pop
   , rem
+  , rem_un
   , ret
+  , shl
+  , shr
+  , shr_un
+  , stelem_i
+  , stelem_i1
+  , stelem_i2
+  , stelem_i4
+  , stelem_i8
+  , stelem_r4
+  , stelem_r8
+  , stelem_ref
   , stfld
   , stind_i
   , stind_i1
@@ -80,9 +117,17 @@ module Language.Cil.Build (
   , stlocN
   , stsfld
   , sub
+  , sub_ovf
+  , sub_ovf_un
   , tail
   , tailcall
+  , throw
+  , unaligned
+  , unalignedPtr
   , unbox
+  , volatile
+  , volatilePtr
+  , xor
 
   -- * Convenient AST functions
   , label
@@ -97,9 +142,9 @@ module Language.Cil.Build (
   , mscorlibRef
   ) where
 
--- If someone uses the `rem' or `tail' opcode, they can deal with the ambiguous
--- occurence themselves!
-import Prelude hiding (rem, tail)
+-- Ambiguous occurences of functions can be resolved when by importing this
+-- module qualified, or by hiding Prelude functions.
+import Prelude hiding (rem, tail, and, or, not, break, div)
 import Data.Char (ord)
 
 import Language.Cil.Syntax
@@ -126,6 +171,15 @@ maxStack x = Directive (MaxStack x)
 add :: MethodDecl
 add = mdecl $ Add
 
+add_ovf :: MethodDecl
+add_ovf = mdecl $ Add_ovf
+
+add_ovf_un :: MethodDecl
+add_ovf_un = mdecl $ Add_ovf_un
+
+and :: MethodDecl
+and = mdecl $ And
+
 beq :: Label -> MethodDecl
 beq = mdecl . Beq
 
@@ -150,6 +204,9 @@ unbox = mdecl . Unbox
 br :: Label -> MethodDecl
 br = mdecl . Br
 
+break :: MethodDecl
+break = mdecl $ Break
+
 brfalse :: Label -> MethodDecl
 brfalse = mdecl . Brfalse
 
@@ -162,15 +219,22 @@ call ccs p l t m ps = mdecl $ Call ccs p l t m ps
 callvirt :: PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
 callvirt p l t m ps = mdecl $ CallVirt p l t m ps
 
-ceq, cge, cgt, cle, clt :: MethodDecl
+ceq, cgt, clt :: MethodDecl
 ceq = mdecl $ Ceq
-cge = mdecl $ Cge
 cgt = mdecl $ Cgt
-cle = mdecl $ Cle
 clt = mdecl $ Clt
+
+ckfinite :: MethodDecl
+ckfinite = mdecl $ Ckfinite
 
 dup :: MethodDecl
 dup = mdecl $ Dup
+
+div :: MethodDecl
+div = mdecl $ Div
+
+div_un :: MethodDecl
+div_un = mdecl $ Div_un
 
 isinst :: TypeName -> MethodDecl
 isinst = mdecl . Isinst
@@ -211,6 +275,45 @@ ldc_r8 = mdecl . Ldc_r8
 
 ldchar :: Char -> MethodDecl
 ldchar c = ldc_i4 (toInteger $ ord c)
+
+ldelem_i :: MethodDecl
+ldelem_i = mdecl $ Ldelem_i
+
+ldelem_i1 :: MethodDecl
+ldelem_i1 = mdecl $ Ldelem_i1
+
+ldelem_i2 :: MethodDecl
+ldelem_i2 = mdecl $ Ldelem_i2
+
+ldelem_i4 :: MethodDecl
+ldelem_i4 = mdecl $ Ldelem_i4
+
+ldelem_i8 :: MethodDecl
+ldelem_i8 = mdecl $ Ldelem_i8
+
+ldelem_u1 :: MethodDecl
+ldelem_u1 = mdecl $ Ldelem_u1
+
+ldelem_u2 :: MethodDecl
+ldelem_u2 = mdecl $ Ldelem_u2
+
+ldelem_u4 :: MethodDecl
+ldelem_u4 = mdecl $ Ldelem_u4
+
+ldelem_u8 :: MethodDecl
+ldelem_u8 = mdecl $ Ldelem_u8
+
+ldelem_r4 :: MethodDecl
+ldelem_r4 = mdecl $ Ldelem_r4
+
+ldelem_r8 :: MethodDecl
+ldelem_r8 = mdecl $ Ldelem_r8
+
+ldelem_ref :: MethodDecl
+ldelem_ref = mdecl $ Ldelem_ref
+
+ldelema :: MethodDecl
+ldelema = mdecl $ Ldelema
 
 ldfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 ldfld p a t f = mdecl $ Ldfld p a t f
@@ -254,6 +357,9 @@ ldind_u2 = mdecl $ Ldind_u2
 ldind_u4 :: MethodDecl
 ldind_u4 = mdecl $ Ldind_u4
 
+ldlen :: MethodDecl
+ldlen = mdecl $ Ldlen
+
 ldloc :: Offset -> MethodDecl
 ldloc 0 = mdecl $ Ldloc_0
 ldloc 1 = mdecl $ Ldloc_1
@@ -270,6 +376,9 @@ ldloca = mdecl . Ldloca
 ldlocaN :: LocalName -> MethodDecl
 ldlocaN nm = mdecl $ LdlocaN nm
 
+ldnull :: MethodDecl
+ldnull = mdecl $ Ldnull
+
 ldsfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 ldsfld p a t f = mdecl $ Ldsfld p a t f
 
@@ -282,8 +391,17 @@ ldstr = mdecl . Ldstr
 mul :: MethodDecl
 mul = mdecl $ Mul
 
+mul_ovf :: MethodDecl
+mul_ovf = mdecl $ Mul_ovf
+
+mul_ovf_un :: MethodDecl
+mul_ovf_un = mdecl $ Mul_ovf_un
+
 neg :: MethodDecl
 neg = mdecl $ Neg
+
+newarr :: PrimitiveType -> MethodDecl
+newarr t = mdecl $ Newarr t
 
 -- | Creates a new object.
 -- Note that this function assumes the constructor returns Void.
@@ -294,14 +412,56 @@ newobj a t ps = mdecl $ Newobj Void a t ps
 nop :: MethodDecl
 nop = mdecl $ Nop
 
+not :: MethodDecl
+not = mdecl $ Not
+
+or :: MethodDecl
+or = mdecl $ Or
+
 pop :: MethodDecl
 pop = mdecl $ Pop
 
 rem :: MethodDecl
 rem = mdecl $ Rem
 
+rem_un :: MethodDecl
+rem_un = mdecl $ Rem_un
+
 ret :: MethodDecl
 ret = mdecl $ Ret
+
+shl :: MethodDecl
+shl = mdecl $ Shl
+
+shr :: MethodDecl
+shr = mdecl $ Shr
+
+shr_un :: MethodDecl
+shr_un = mdecl $ Shr_un
+
+stelem_i :: MethodDecl
+stelem_i = mdecl $ Stelem_i
+
+stelem_i1 :: MethodDecl
+stelem_i1 = mdecl $ Stelem_i1
+
+stelem_i2 :: MethodDecl
+stelem_i2 = mdecl $ Stelem_i2
+
+stelem_i4 :: MethodDecl
+stelem_i4 = mdecl $ Stelem_i4
+
+stelem_i8 :: MethodDecl
+stelem_i8 = mdecl $ Stelem_i8
+
+stelem_r4 :: MethodDecl
+stelem_r4 = mdecl $ Stelem_r4
+
+stelem_r8 :: MethodDecl
+stelem_r8 = mdecl $ Stelem_r8
+
+stelem_ref :: MethodDecl
+stelem_ref = mdecl $ Stelem_ref
 
 stfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 stfld p a t f = mdecl $ Stfld p a t f
@@ -346,6 +506,12 @@ stsfld p a t f = mdecl $ Stsfld p a t f
 sub :: MethodDecl
 sub = mdecl $ Sub
 
+sub_ovf :: MethodDecl
+sub_ovf = mdecl $ Sub_ovf
+
+sub_ovf_un :: MethodDecl
+sub_ovf_un = mdecl $ Sub_ovf_un
+
 tail :: MethodDecl
 tail = mdecl $ Tail
 
@@ -353,11 +519,69 @@ tailcall :: MethodDecl -> MethodDecl
 tailcall (Instr (OpCode oc)) = Instr (OpCode (Tailcall oc))
 tailcall _                   = error $ "Language.Cil.Build.tailcall: Can't tailcall supplied argument"
 
+throw :: MethodDecl
+throw = mdecl $ Throw
+
+unaligned :: Alignment -> MethodDecl
+unaligned a = mdecl $ Unaligned a
+
+unalignedPtr :: Alignment -> MethodDecl -> MethodDecl
+unalignedPtr a (Instr (OpCode oc)) | supportsUnaligned oc = mdecl $ UnalignedPtr a oc
+unalignedPtr _ _                                          = error $ "Language.Cil.Build.unalignedPtr: Supplied argument doesn't require alignment"
+
+volatile :: MethodDecl
+volatile = mdecl $ Volatile
+
+volatilePtr :: MethodDecl -> MethodDecl
+volatilePtr (Instr (OpCode oc)) | supportsVolatile oc = mdecl $ VolatilePtr oc
+volatilePtr _                                         = error $ "Language.Cil.Build.volatilePtr: Supplied argument cannot be marked volatile"
+
+xor :: MethodDecl
+xor = mdecl $ Xor
 
 -- Helper functions
 
 mdecl :: OpCode -> MethodDecl
 mdecl i = Instr $ OpCode i
+
+supportsUnaligned :: OpCode -> Bool
+supportsUnaligned (VolatilePtr oc) = supportsPrefix oc
+supportsUnaligned oc               = supportsPrefix oc
+
+supportsVolatile :: OpCode -> Bool
+supportsVolatile (UnalignedPtr _ oc) = supportsPrefix oc
+supportsVolatile oc                  = supportsPrefix oc
+
+supportsPrefix :: OpCode -> Bool
+supportsPrefix Ldind_i   = True
+supportsPrefix Ldind_i1  = True
+supportsPrefix Ldind_i2  = True
+supportsPrefix Ldind_i4  = True
+supportsPrefix Ldind_i8  = True
+supportsPrefix Ldind_r4  = True
+supportsPrefix Ldind_r8  = True
+supportsPrefix Ldind_ref = True
+supportsPrefix Ldind_u1  = True
+supportsPrefix Ldind_u2  = True
+supportsPrefix Ldind_u4  = True
+supportsPrefix Stind_i   = True
+supportsPrefix Stind_i1  = True
+supportsPrefix Stind_i2  = True
+supportsPrefix Stind_i4  = True
+supportsPrefix Stind_i8  = True
+supportsPrefix Stind_r4  = True
+supportsPrefix Stind_r8  = True
+supportsPrefix Stind_ref = True
+supportsPrefix (Ldfld _ _ _ _) = True
+supportsPrefix (Stfld _ _ _ _) = True
+-- there are several cases for not-yet-supported opcodes
+-- supportsPrefix (Ldobj ...)
+-- supportsPrefix (Stobj ...)
+-- supportsPrefix (Initblk ...)
+-- supportsPrefix (Cpblk ...)
+supportsPrefix _         = False
+
+
 
 -- Convenient AST functions
 

@@ -162,6 +162,8 @@ instance Pretty Local where
 
 instance Pretty OpCode where
   pr (Add)                 = ("add" ++)
+  pr (Add_ovf)             = ("add.ovf" ++)
+  pr (Add_ovf_un)          = ("add.ovf.un" ++)
   pr (And)                 = ("and" ++)
   pr (Beq l)               = ("beq " ++) . (l ++)
   pr (Bge l)               = ("bge " ++) . (l ++)
@@ -170,6 +172,7 @@ instance Pretty OpCode where
   pr (Blt l)               = ("blt " ++) . (l ++)
   pr (Box t)               = ("box " ++) . pr t
   pr (Br l)                = ("br " ++) . (l ++)
+  pr (Break)               = ("break" ++)
   pr (Brfalse l)           = ("brfalse " ++) . (l ++)
   pr (Brtrue l)            = ("brtrue " ++) . (l ++)
   pr (Call ccs t a c m ps) = ("call " ++) . prList ccs . pr t . sp
@@ -177,10 +180,11 @@ instance Pretty OpCode where
   pr (CallVirt t a c m ps) = ("callvirt instance " ++) . prsp t . sp
                                . prCall a c m ps
   pr (Ceq)                 = ("ceq" ++)
-  pr (Cge)                 = ("cge" ++)
   pr (Cgt)                 = ("cgt" ++)
-  pr (Cle)                 = ("cle" ++)
+  pr (Ckfinite)            = ("ckfinite" ++)
   pr (Clt)                 = ("clt" ++)
+  pr (Div)                 = ("div" ++)
+  pr (Div_un)              = ("div.un" ++)
   pr (Dup)                 = ("dup" ++)
   pr (Isinst nm)           = ("isinst " ++) . prName nm
   pr (Ldarg x)             = ("ldarg " ++) . shows x
@@ -204,6 +208,16 @@ instance Pretty OpCode where
   pr (Ldc_i8 x)            = ("ldc.i8 " ++) . shows x
   pr (Ldc_r4 x)            = ("ldc.r4 " ++) . shows x
   pr (Ldc_r8 x)            = ("ldc.r8 " ++) . shows x
+  pr (Ldelem_i)            = ("ldelem.i " ++)
+  pr (Ldelem_i1)           = ("ldelem.i1 " ++)
+  pr (Ldelem_i2)           = ("ldelem.i2 " ++)
+  pr (Ldelem_i4)           = ("ldelem.i4 " ++)
+  pr (Ldelem_i8)           = ("ldelem.i8 " ++)
+  pr (Ldelem_u1)           = ("ldelem.u1 " ++)
+  pr (Ldelem_u2)           = ("ldelem.u2 " ++)
+  pr (Ldelem_u4)           = ("ldelem.u4 " ++)
+  pr (Ldelem_u8)           = ("ldelem.u8 " ++)
+  pr (Ldelem_ref)          = ("ldelem.ref " ++)
   pr (Ldfld t a c f)       = ("ldfld " ++) . pr t . sp . prFld a c f
   pr (Ldflda t a c f)      = ("ldflda " ++) . pr t . sp . prFld a c f
   pr (Ldftn t a c m ps)    = ("ldftn " ++) . pr t . sp . prCall a c m ps
@@ -218,6 +232,7 @@ instance Pretty OpCode where
   pr (Ldind_u1)            = ("ldind.u1 " ++)
   pr (Ldind_u2)            = ("ldind.u2 " ++)
   pr (Ldind_u4)            = ("ldind.u4 " ++)
+  pr (Ldlen)               = ("ldlen " ++)
   pr (Ldloc x)             = ("ldloc " ++) . shows x
   pr (Ldloc_0)             = ("ldloc.0 " ++)
   pr (Ldloc_1)             = ("ldloc.1 " ++)
@@ -226,17 +241,33 @@ instance Pretty OpCode where
   pr (LdlocN nm)           = ("ldloc " ++) . prName nm
   pr (Ldloca x)            = ("ldloca " ++) . shows x
   pr (LdlocaN nm)          = ("ldloca " ++) . prName nm
+  pr (Ldnull)              = ("ldnull " ++)
   pr (Ldsfld t a c f)      = ("ldsfld " ++) . pr t . sp . prFld a c f
   pr (Ldsflda t a c f)     = ("ldsflda " ++) . pr t . sp . prFld a c f
   pr (Ldstr s)             = ("ldstr " ++) . shows s
   pr (Mul)                 = ("mul" ++)
+  pr (Mul_ovf)             = ("mul.ovf" ++)
+  pr (Mul_ovf_un)          = ("mul.ovf.un" ++)
   pr (Neg)                 = ("neg" ++)
+  pr (Newarr t)            = ("newarr " ++) . pr t
   pr (Newobj t a c ps)     = ("newobj instance " ++) . pr t . sp
                                . prNewobj a c ps
   pr (Nop)                 = ("nop" ++)
+  pr (Not)                 = ("not" ++)
+  pr (Or)                  = ("or" ++)
   pr (Pop)                 = ("pop" ++)
   pr (Rem)                 = ("rem" ++)
+  pr (Rem_un)              = ("rem.un" ++)
   pr (Ret)                 = ("ret" ++)
+  pr (Shl)                 = ("shl" ++)
+  pr (Shr)                 = ("shr" ++)
+  pr (Shr_un)              = ("shr.un" ++)
+  pr (Stelem_i)            = ("stelem.i " ++)
+  pr (Stelem_i1)           = ("stelem.i1 " ++)
+  pr (Stelem_i2)           = ("stelem.i2 " ++)
+  pr (Stelem_i4)           = ("stelem.i4 " ++)
+  pr (Stelem_i8)           = ("stelem.i8 " ++)
+  pr (Stelem_ref)          = ("stelem.ref " ++)
   pr (Stfld t a c f)       = ("stfld " ++) . pr t . sp . prFld a c f
   pr (Stind_i)             = ("stind.i " ++)
   pr (Stind_i1)            = ("stind.i1 " ++)
@@ -254,9 +285,17 @@ instance Pretty OpCode where
   pr (StlocN nm)           = ("stloc " ++) . prName nm
   pr (Stsfld t a c f)      = ("stsfld " ++) . pr t . sp . prFld a c f
   pr (Sub)                 = ("sub" ++)
+  pr (Sub_ovf)             = ("sub.ovf" ++)
+  pr (Sub_ovf_un)          = ("sub.ovf.un" ++)
   pr (Tail)                = ("tail." ++)
   pr (Tailcall opcode)     = ("tail. " ++) . pr opcode
+  pr (Throw)               = ("throw" ++)
+  pr (Unaligned a)         = ("unaligned. " ++) . pr a
+  pr (UnalignedPtr a opcode)  = ("unaligned. " ++) . pr a . sp . pr opcode
   pr (Unbox t)             = ("unbox " ++) . pr t
+  pr (Volatile)            = ("volatile." ++)
+  pr (VolatilePtr opcode)  = ("volatile. " ++) . pr opcode
+  pr (Xor)                 = ("xor" ++)
 
 instance Pretty CallConv where
   pr (CcInstance) = ("instance" ++)
@@ -312,6 +351,11 @@ instance Pretty PrimitiveType where
                                        . ("<" ++) . foldr (.) id (intersperse ("," ++) (map ((("!" ++) .) . prName) gs)) . (">" ++)
   pr (GenericType x)     = ("!" ++) . shows x
   pr (ByRef pt)          = pr pt . ("&" ++)
+
+instance Pretty Alignment where
+  pr ByteAligned         = ("1" ++)
+  pr DoubleByteAligned   = ("2" ++)
+  pr QuadByteAligned     = ("4" ++)
 
 -- Helper functions, to pretty print
 prsp :: (Pretty a) => a -> ShowS
