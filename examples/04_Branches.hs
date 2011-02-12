@@ -41,14 +41,14 @@ hellos = Method [MaStatic, MaPublic] Void "hellos" [Param Nothing Int32 "x"]
   , stloc 0
   , br "Test"
   , label "Loop"
-  $ ldstr "Hello!"
+  , ldstr "Hello!"
   , call [] Void "mscorlib" "System.Console" "WriteLine" [String]
   , ldloc 0
   , ldc_i4 1
   , sub
   , stloc 0
   , label "Test"
-  $ ldloc 0
+  , ldloc 0
   , ldc_i4 0
   , bgt "Loop"
   , ret
@@ -66,16 +66,16 @@ sign = Method [MaStatic, MaPublic] Void "sign" [Param Nothing Int32 "x"]
   , br "End"
 
   , label "TestPositive"
-  $ ldarg 0
+  , ldarg 0
   , brtrue "Positive"
   , ldstr "input is zero!"
   , call [] Void "mscorlib" "System.Console" "WriteLine" [String]
   , br "End"
 
   , label "Positive"
-  $ ldstr "input is positive!"
+  , ldstr "input is positive!"
   , call [] Void "mscorlib" "System.Console" "WriteLine" [String]
   , label "End"
-  $ ret
+  , ret
   ]
 

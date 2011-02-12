@@ -183,9 +183,9 @@ data ParamAttr
 -- | Method declarations, i.e. the body of a method.
 data MethodDecl
   = Directive Directive
-  | OpCode OpCode
-  | Label Label
-  | Comment String
+  | Label     Label
+  | OpCode    OpCode
+  | Comment   String
   deriving Show
 
 -- | Directive meta data for method definitions.
