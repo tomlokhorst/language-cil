@@ -223,7 +223,7 @@ callvirt :: PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [Primitiv
 callvirt p l t m ps = OpCode $ CallVirt p l t m ps
 
 castclass :: PrimitiveType -> MethodDecl
-castclass = mdecl . Castclass
+castclass = OpCode . Castclass
 
 ceq, cge, cgt, cle, clt :: MethodDecl
 ceq = OpCode $ Ceq
