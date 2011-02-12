@@ -30,10 +30,8 @@ module Language.Cil.Build (
   , call
   , callvirt
   , ceq
-  , cge
   , cgt
   , ckfinite
-  , cle
   , clt 
   , dup
   , div
@@ -221,11 +219,9 @@ call ccs p l t m ps = mdecl $ Call ccs p l t m ps
 callvirt :: PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
 callvirt p l t m ps = mdecl $ CallVirt p l t m ps
 
-ceq, cge, cgt, cle, clt :: MethodDecl
+ceq, cgt, clt :: MethodDecl
 ceq = mdecl $ Ceq
-cge = mdecl $ Cge
 cgt = mdecl $ Cgt
-cle = mdecl $ Cle
 clt = mdecl $ Clt
 
 ckfinite :: MethodDecl
