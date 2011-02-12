@@ -233,6 +233,7 @@ data OpCode
       , methodName   :: MethodName      -- ^ Name of the method.
       , paramTypes   :: [PrimitiveType] -- ^ Types of the formal parameters of the method.
       } -- ^ Pops /n/ values, calls specified virtual method, pushes return value. (where /n/ is the number of formal parameters of the method).
+  | Castclass PrimitiveType -- ^ Pops 1 value, attempts to cast it to the specified type. If this succeeds, pushes the cast value. Otherwise throws an InvalidCastException.
   | Ceq                -- ^ Pops 2 values, if they are equal, pushes 1 to stack; otherwise, pushes 0.
   | Cgt                -- ^ Pops 2 values and compares them.
   | Ckfinite           -- ^ Pops a float or double. Throws an ArithmeticException if the popped value is NaN or +/- infinity. Pushes the popped value.
@@ -247,6 +248,8 @@ data OpCode
   | Ldarg_2            -- ^ Loads 2th argument to current method onto stack.
   | Ldarg_3            -- ^ Loads 3th argument to current method onto stack.
   | LdargN DottedName  -- ^ Loads named argument to current method onto stack.
+  | Ldarga Offset      -- ^ Loads address of the /n/-th argument to current method onto stack.
+  | LdargaN DottedName -- ^ Loads address of the named argument to current method onto stack.
   | Ldc_i4 Integer     -- ^ Loads the supplied 32-bit integer onto the stack.
   | Ldc_i4_0           -- ^ Loads the value 0 onto the stack.
   | Ldc_i4_1           -- ^ Loads the value 1 onto the stack.

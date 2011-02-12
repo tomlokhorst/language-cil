@@ -176,6 +176,7 @@ instance Pretty OpCode where
                                . prCall a c m ps
   pr (CallVirt t a c m ps) = ("callvirt instance " ++) . prsp t . sp
                                . prCall a c m ps
+  pr (Castclass t)         = ("castclass " ++) . pr t
   pr (Ceq)                 = ("ceq" ++)
   pr (Cgt)                 = ("cgt" ++)
   pr (Ckfinite)            = ("ckfinite" ++)
@@ -190,6 +191,8 @@ instance Pretty OpCode where
   pr (Ldarg_2)             = ("ldarg.2 " ++)
   pr (Ldarg_3)             = ("ldarg.3 " ++)
   pr (LdargN nm)           = ("ldarg " ++) . prName nm
+  pr (Ldarga x)            = ("ldarga " ++) . shows x
+  pr (LdargaN nm)          = ("ldarga " ++) . prName nm
   pr (Ldc_i4 x)            = ("ldc.i4 " ++) . shows x
   pr (Ldc_i4_0)            = ("ldc.i4.0 " ++) 
   pr (Ldc_i4_1)            = ("ldc.i4.1 " ++) 

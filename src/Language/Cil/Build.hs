@@ -29,6 +29,7 @@ module Language.Cil.Build (
   , brtrue
   , call
   , callvirt
+  , castclass
   , ceq
   , cgt
   , ckfinite
@@ -39,6 +40,8 @@ module Language.Cil.Build (
   , isinst
   , ldarg
   , ldargN
+  , ldarga
+  , ldargaN
   , ldc_i4
   , ldc_i8
   , ldc_r4
@@ -219,6 +222,9 @@ call ccs p l t m ps = OpCode $ Call ccs p l t m ps
 callvirt :: PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
 callvirt p l t m ps = OpCode $ CallVirt p l t m ps
 
+castclass :: PrimitiveType -> MethodDecl
+castclass = OpCode . Castclass
+
 ceq, cgt, clt :: MethodDecl
 ceq = OpCode $ Ceq
 cgt = OpCode $ Cgt
@@ -248,6 +254,12 @@ ldarg x = OpCode $ Ldarg x
 
 ldargN :: DottedName -> MethodDecl
 ldargN = OpCode . LdargN
+
+ldarga :: Offset -> MethodDecl
+ldarga = OpCode . Ldarga
+
+ldargaN :: DottedName -> MethodDecl
+ldargaN = OpCode . LdargaN
 
 ldc_i4 :: Integer -> MethodDecl
 ldc_i4 (-1) = OpCode $ Ldc_i4_m1
