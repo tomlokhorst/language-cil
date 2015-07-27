@@ -143,6 +143,7 @@ data PrimitiveType
   | GenericReferenceType AssemblyName TypeName [GenParamName]
   | ByRef PrimitiveType
   | GenericType Offset
+  | Array PrimitiveType
   deriving Show
 
 -- | A specification of pointer alignment.
