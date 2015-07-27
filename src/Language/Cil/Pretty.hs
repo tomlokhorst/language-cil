@@ -352,6 +352,7 @@ instance Pretty PrimitiveType where
                                        . ("<" ++) . foldr (.) id (intersperse ("," ++) (map ((("!" ++) .) . prName) gs)) . (">" ++)
   pr (GenericType x)     = ("!" ++) . shows x
   pr (ByRef pt)          = pr pt . ("&" ++)
+  pr (Array et)          = pr et . ("[]" ++)
 
 instance Pretty Alignment where
   pr ByteAligned         = ("1" ++)
