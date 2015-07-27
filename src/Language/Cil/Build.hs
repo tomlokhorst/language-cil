@@ -122,6 +122,7 @@ module Language.Cil.Build (
   , sub
   , sub_ovf
   , sub_ovf_un
+  , switch
   , tail
   , tailcall
   , throw
@@ -523,6 +524,9 @@ sub_ovf = OpCode $ Sub_ovf
 
 sub_ovf_un :: MethodDecl
 sub_ovf_un = OpCode $ Sub_ovf_un
+
+switch :: [Label] -> MethodDecl
+switch = OpCode . Switch
 
 tail :: MethodDecl
 tail = OpCode $ Tail
