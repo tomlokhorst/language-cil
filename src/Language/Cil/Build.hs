@@ -128,6 +128,7 @@ module Language.Cil.Build (
   , unaligned
   , unalignedPtr
   , unbox
+  , unbox_any
   , volatile
   , volatilePtr
   , xor
@@ -203,6 +204,9 @@ box = OpCode . Box
 
 unbox :: PrimitiveType -> MethodDecl
 unbox = OpCode . Unbox
+
+unbox_any :: PrimitiveType -> MethodDecl
+unbox_any = OpCode . Unbox_any
 
 br :: Label -> MethodDecl
 br = OpCode . Br

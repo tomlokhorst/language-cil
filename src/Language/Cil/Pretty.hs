@@ -293,6 +293,7 @@ instance Pretty OpCode where
   pr (Unaligned a)         = ("unaligned. " ++) . pr a
   pr (UnalignedPtr a opcode)  = ("unaligned. " ++) . pr a . sp . pr opcode
   pr (Unbox t)             = ("unbox " ++) . pr t
+  pr (Unbox_any t)         = ("unbox.any " ++) . pr t
   pr (Volatile)            = ("volatile." ++)
   pr (VolatilePtr opcode)  = ("volatile. " ++) . pr opcode
   pr (Xor)                 = ("xor" ++)

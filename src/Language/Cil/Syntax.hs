@@ -395,6 +395,7 @@ data OpCode
   | Unaligned Alignment -- ^ Performs subsequent load or store operation under a weaker-than-usual alignment precondition.
   | UnalignedPtr  Alignment OpCode -- ^ Performs provided load or store operation under a weaker-than-usual alignment precondition.
   | Unbox PrimitiveType  -- ^ Pops 1 value, unboxes object reference, pushes value type.
+  | Unbox_any PrimitiveType  -- ^ Pops 1 value, unboxes and loads value, equivalent to unbox followed by ldobj
   | Volatile           -- ^ Marks subsequent pointer reference as volatile, i.e. the value it points at can be modified from another thread.
   | VolatilePtr OpCode -- ^ Marks provided pointer reference as volatile, i.e. the value it points at can be modified from another thread.
   | Xor                -- ^ Pops 2 values, do bitwise XOR between the values, pushes result.
