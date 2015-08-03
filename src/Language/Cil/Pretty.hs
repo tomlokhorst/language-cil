@@ -103,12 +103,14 @@ instance Pretty FieldAttr where
 instance Pretty MethodDef where
   pr (Constructor mas t ps ms) =
       ident . (".method " ++)
-    . prList mas . pr t . sp . (".ctor(" ++)
+    . prList mas . pr t . sp . (ctorName ++)
     . foldr (.) id (intersperse (", " ++) (map pr ps))
     . (") cil managed\n" ++)
     . ident . ("{\n" ++)
     . foldr (\m s -> pr m . s) id ms
     . ident . ("}\n" ++)
+    where ctorName = if static then ".cctor(" else ".ctor("
+          static   = MaStatic `elem` mas
   pr (Method mas t n ps ms) =
       ident . (".method " ++)
     . prList mas

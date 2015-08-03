@@ -167,7 +167,7 @@ data MethAttr
   | MaAssembly
   | MaVirtual
   | MaHidebysig
-  deriving Show
+  deriving (Show, Eq)
 
 -- | A formal parameter to a method.
 data Parameter
