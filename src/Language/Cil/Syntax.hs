@@ -389,6 +389,7 @@ data OpCode
   | Sub                -- ^ Pops 2 values, subtracts second value from the first value, pushes result.
   | Sub_ovf            -- ^ Pops 2 values, subtracts second value from the first value with a signed overflow check, pushes result.
   | Sub_ovf_un         -- ^ Pops 2 values, subtracts second value from the first value with an unsigned overflow check, pushes result.
+  | Switch [Label]     -- ^ Pops an unsigned integer value and transfers control to label with matching index.
   | Tail               -- ^ Performs subsequent call as a tail call, by replacing current stack frame with callee stack frame.
   | Tailcall OpCode    -- ^ Performs provided call as a tail call, by replacing current stack frame with callee stack frame.
   | Throw              -- ^ Pops an object reference from the stack and throws it as an exception.

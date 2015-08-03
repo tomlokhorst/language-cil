@@ -287,6 +287,7 @@ instance Pretty OpCode where
   pr (Sub)                 = ("sub" ++)
   pr (Sub_ovf)             = ("sub.ovf" ++)
   pr (Sub_ovf_un)          = ("sub.ovf.un" ++)
+  pr (Switch labels)       = (("switch (" ++ intercalate ", " labels ++ ")") ++)
   pr (Tail)                = ("tail." ++)
   pr (Tailcall opcode)     = ("tail. " ++) . pr opcode
   pr (Throw)               = ("throw" ++)
