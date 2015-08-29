@@ -345,7 +345,7 @@ instance Pretty PrimitiveType where
   pr Int32               = ("int32" ++)
   pr Int64               = ("int64" ++)
   pr Float32             = ("float32" ++)
-  pr Double64            = ("double64" ++)
+  pr Double64            = ("float64" ++)
   pr IntPtr              = ("native int" ++)
   pr String              = ("string" ++)
   pr Object              = ("object" ++)
