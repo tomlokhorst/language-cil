@@ -123,6 +123,7 @@ data FieldAttr
   | FaPublic
   | FaPrivate
   | FaAssembly
+  | FaInitOnly
   deriving Show
 
 -- | Primitive types in CIL.
