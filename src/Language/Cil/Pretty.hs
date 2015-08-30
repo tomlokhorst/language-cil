@@ -99,6 +99,7 @@ instance Pretty FieldAttr where
   pr (FaPublic)    = ("public" ++)
   pr (FaPrivate)   = ("private" ++)
   pr (FaAssembly)  = ("assembly" ++)
+  pr (FaInitOnly)  = ("initonly" ++)
 
 instance Pretty MethodDef where
   pr (Constructor mas t ps ms) =
