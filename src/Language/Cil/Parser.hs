@@ -72,7 +72,7 @@ pPrimitiveType =  Void <$  pKey "void"
               <|> Int32 <$ pKey "int32"
               <|> Int64 <$ pKey "int64"
               <|> Float32 <$ pKey "float32"
-              <|> Double64 <$ pKey "double64"
+              <|> Double64 <$ pKey "float64"
               <|> String <$ pKey "string"
               <|> Object <$ pKey "object"
 
