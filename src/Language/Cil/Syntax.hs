@@ -333,6 +333,7 @@ data OpCode
       , fieldName    :: FieldName      -- ^ Name of the field.
       } -- ^ Pops type reference, find address of specified field on the type, pushes address to the stack.
   | Ldstr String       -- ^ Pushes an object reference to the specified string constant.
+  | Ldtoken PrimitiveType -- ^ Pushes the RuntimeTypeHandle of the specified type.
   | Mul                -- ^ Pops 2 values, multiplies the values, pushes result.
   | Mul_ovf            -- ^ Pops 2 values, multiplies the values with a signed overflow check, pushes result.
   | Mul_ovf_un         -- ^ Pops 2 values, multiplies the values with an unsigned overflow check, pushes result.
