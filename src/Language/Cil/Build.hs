@@ -83,6 +83,7 @@ module Language.Cil.Build (
   , ldsfld
   , ldsflda
   , ldstr
+  , ldtoken
   , mul
   , mul_ovf
   , mul_ovf_un
@@ -404,6 +405,9 @@ ldsflda p a t f = OpCode $ Ldsflda p a t f
 
 ldstr :: String -> MethodDecl
 ldstr = OpCode . Ldstr
+
+ldtoken :: PrimitiveType -> MethodDecl
+ldtoken = OpCode . Ldtoken
 
 mul :: MethodDecl
 mul = OpCode $ Mul
