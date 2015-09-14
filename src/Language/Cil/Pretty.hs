@@ -248,6 +248,7 @@ instance Pretty OpCode where
   pr (Ldsfld t a c f)      = ("ldsfld " ++) . pr t . sp . prFld a c f
   pr (Ldsflda t a c f)     = ("ldsflda " ++) . pr t . sp . prFld a c f
   pr (Ldstr s)             = ("ldstr " ++) . shows s
+  pr (Ldtoken t)           = ("ldtoken " ++) . prTypeToken t
   pr (Mul)                 = ("mul" ++)
   pr (Mul_ovf)             = ("mul.ovf" ++)
   pr (Mul_ovf_un)          = ("mul.ovf.un" ++)
@@ -334,6 +335,11 @@ prCall a c m ps =
   . ("(" ++)
   . foldr (.) id (intersperse (", " ++) (map pr ps))
   . (")" ++)
+
+prTypeToken :: PrimitiveType -> ShowS
+prTypeToken (ValueType a c)     = prAssembly a . prName c
+prTypeToken (ReferenceType a c) = prAssembly a . prName c
+prTypeToken t = pr t
 
 prAssembly :: DottedName -> ShowS
 prAssembly a = bool (("[" ++) . prName a . ("]" ++)) id (a == "")
