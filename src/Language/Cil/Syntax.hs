@@ -294,7 +294,8 @@ data OpCode
       , fieldName    :: FieldName      -- ^ Name of the field.
       } -- ^ Pops object reference, find address of specified field on the object, pushes address to the stack.
   | Ldftn 
-      { returnType   :: PrimitiveType    -- ^ Return type of the method.
+      { callConv     :: [CallConv]       -- ^ Method is associated with class or instance.
+      , returnType   :: PrimitiveType    -- ^ Return type of the method.
       , assemblyName :: AssemblyName     -- ^ Name of the assembly where the method resides.
       , typeName     :: TypeName         -- ^ Name of the type of which the method is a member.
       , methodName   :: MethodName       -- ^ Name of the method.

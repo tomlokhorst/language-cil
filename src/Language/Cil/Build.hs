@@ -63,6 +63,7 @@ module Language.Cil.Build (
   , ldfld
   , ldflda
   , ldftn
+  , ldftn_instance
   , ldind_i
   , ldind_i1
   , ldind_i2
@@ -339,8 +340,14 @@ ldfld p a t f = OpCode $ Ldfld p a t f
 ldflda :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 ldflda p a t f = OpCode $ Ldflda p a t f
 
+ldftn_ :: [CallConv] -> PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
+ldftn_ cc p a t m ps = OpCode $ Ldftn cc p a t m ps
+
 ldftn :: PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
-ldftn p a t m ps = OpCode $ Ldftn p a t m ps
+ldftn = ldftn_ []
+
+ldftn_instance :: PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
+ldftn_instance = ldftn_ [CcInstance]
 
 ldind_i :: MethodDecl
 ldind_i = OpCode $ Ldind_i
