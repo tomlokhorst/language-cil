@@ -142,6 +142,7 @@ data PrimitiveType
   | ValueType AssemblyName TypeName
   | ReferenceType AssemblyName TypeName
   | GenericReferenceType AssemblyName TypeName [GenParamName]
+  | GenericReferenceTypeInstance AssemblyName TypeName [PrimitiveType]
   | ByRef PrimitiveType
   | GenericType Offset
   | Array PrimitiveType

@@ -344,6 +344,12 @@ prTypeToken t = pr t
 prAssembly :: DottedName -> ShowS
 prAssembly a = bool (("[" ++) . prName a . ("]" ++)) id (a == "")
 
+prGenericTypeName :: TypeName -> [a] -> (a -> ShowS) -> ShowS
+prGenericTypeName n args prArg =
+    prName n
+  . ("`" ++) . shows (length args)
+  . ("<" ++) . foldr (.) id (intersperse ("," ++) (map prArg args)) . (">" ++)
+
 instance Pretty PrimitiveType where
   pr Void                = ("void" ++) 
   pr Bool                = ("bool" ++)
@@ -358,8 +364,8 @@ instance Pretty PrimitiveType where
   pr Object              = ("object" ++)
   pr (ValueType a c)     = ("valuetype " ++) . prAssembly a . prName c
   pr (ReferenceType a c) = ("class " ++ ) . prAssembly a . prName c
-  pr (GenericReferenceType a c gs) = prAssembly a . prName c . ("`" ++) . shows (length gs)
-                                       . ("<" ++) . foldr (.) id (intersperse ("," ++) (map ((("!" ++) .) . prName) gs)) . (">" ++)
+  pr (GenericReferenceType a c gs)         = prAssembly a . prGenericTypeName c gs ((("!" ++) .) . prName)
+  pr (GenericReferenceTypeInstance a c ts) = ("class " ++) . prAssembly a . prGenericTypeName c ts pr
   pr (GenericType x)     = ("!" ++) . shows x
   pr (ByRef pt)          = pr pt . ("&" ++)
   pr (Array et)          = pr et . ("[]" ++)
