@@ -223,7 +223,7 @@ instance Pretty OpCode where
   pr (Ldelem_ref)          = ("ldelem.ref " ++)
   pr (Ldfld t a c f)       = ("ldfld " ++) . pr t . sp . prFld a c f
   pr (Ldflda t a c f)      = ("ldflda " ++) . pr t . sp . prFld a c f
-  pr (Ldftn t a c m ps)    = ("ldftn " ++) . pr t . sp . prCall a c m ps
+  pr (Ldftn cc t a c m ps) = ("ldftn " ++) . prList cc . pr t . sp . prCall a c m ps
   pr (Ldind_i)             = ("ldind.i " ++)
   pr (Ldind_i1)            = ("ldind.i1 " ++)
   pr (Ldind_i2)            = ("ldind.i2 " ++)
