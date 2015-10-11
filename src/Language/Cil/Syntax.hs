@@ -146,7 +146,7 @@ data PrimitiveType
   | ByRef PrimitiveType
   | GenericType Offset
   | Array PrimitiveType
-  deriving Show
+  deriving (Eq, Ord, Show)
 
 -- | A specification of pointer alignment.
 data Alignment
