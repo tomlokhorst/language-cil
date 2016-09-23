@@ -280,7 +280,7 @@ data OpCode
   | Ldelem_r4          -- ^ Pops an array reference and an index. Pushes the float in the specified slot of the array.
   | Ldelem_r8          -- ^ Pops an array reference and an index. Pushes the double in the specified slot of the array.
   | Ldelem_ref         -- ^ Pops an array reference and an index. Pushes the object reference in the specified slot of the array.
-  | Ldelema            -- ^ Pops an array reference and an index. Pushes the address of the specified slot of the array.
+  | Ldelema PrimitiveType -- ^ Pops an array reference and an index. Pushes the address of the specified slot of the array.
   | Ldfld
       { fieldType    :: PrimitiveType  -- ^ Type of the field.
       , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.

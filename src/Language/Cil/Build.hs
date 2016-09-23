@@ -333,8 +333,8 @@ ldelem_r8 = OpCode $ Ldelem_r8
 ldelem_ref :: MethodDecl
 ldelem_ref = OpCode $ Ldelem_ref
 
-ldelema :: MethodDecl
-ldelema = OpCode $ Ldelema
+ldelema :: PrimitiveType -> MethodDecl
+ldelema = OpCode . Ldelema
 
 ldfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 ldfld p a t f = OpCode $ Ldfld p a t f

@@ -211,6 +211,7 @@ instance Pretty OpCode where
   pr (Ldc_i8 x)            = ("ldc.i8 " ++) . shows x
   pr (Ldc_r4 x)            = ("ldc.r4 " ++) . shows x
   pr (Ldc_r8 x)            = ("ldc.r8 " ++) . shows x
+  pr (Ldelema t)           = ("ldelema " ++) . pr t
   pr (Ldelem_i)            = ("ldelem.i " ++)
   pr (Ldelem_i1)           = ("ldelem.i1 " ++)
   pr (Ldelem_i2)           = ("ldelem.i2 " ++)
