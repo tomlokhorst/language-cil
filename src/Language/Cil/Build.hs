@@ -85,6 +85,7 @@ module Language.Cil.Build (
   , ldsflda
   , ldstr
   , ldtoken
+  , ldobj
   , mul
   , mul_ovf
   , mul_ovf_un
@@ -120,6 +121,7 @@ module Language.Cil.Build (
   , stind_ref
   , stloc
   , stlocN
+  , stobj
   , stsfld
   , sub
   , sub_ovf
@@ -404,6 +406,9 @@ ldlocaN nm = OpCode $ LdlocaN nm
 ldnull :: MethodDecl
 ldnull = OpCode $ Ldnull
 
+ldobj :: PrimitiveType -> MethodDecl
+ldobj = OpCode . Ldobj
+
 ldsfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 ldsfld p a t f = OpCode $ Ldsfld p a t f
 
@@ -528,6 +533,9 @@ stloc x = OpCode $ Stloc x
 stlocN :: LocalName -> MethodDecl
 stlocN nm = OpCode $ StlocN nm
 
+stobj :: PrimitiveType -> MethodDecl
+stobj = OpCode . Stobj
+
 stsfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 stsfld p a t f = OpCode $ Stsfld p a t f
 
@@ -602,9 +610,9 @@ supportsPrefix Stind_r8  = True
 supportsPrefix Stind_ref = True
 supportsPrefix (Ldfld _ _ _ _) = True
 supportsPrefix (Stfld _ _ _ _) = True
+supportsPrefix (Ldobj _) = True
+supportsPrefix (Stobj _) = True
 -- there are several cases for not-yet-supported opcodes
--- supportsPrefix (Ldobj ...)
--- supportsPrefix (Stobj ...)
 -- supportsPrefix (Initblk ...)
 -- supportsPrefix (Cpblk ...)
 supportsPrefix _         = False

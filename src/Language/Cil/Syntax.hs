@@ -336,6 +336,7 @@ data OpCode
       } -- ^ Pops type reference, find address of specified field on the type, pushes address to the stack.
   | Ldstr String       -- ^ Pushes an object reference to the specified string constant.
   | Ldtoken PrimitiveType -- ^ Pushes the RuntimeTypeHandle of the specified type.
+  | Ldobj PrimitiveType -- ^ Copies the value type object pointed to by an address to the top of the evaluation stack.
   | Mul                -- ^ Pops 2 values, multiplies the values, pushes result.
   | Mul_ovf            -- ^ Pops 2 values, multiplies the values with a signed overflow check, pushes result.
   | Mul_ovf_un         -- ^ Pops 2 values, multiplies the values with an unsigned overflow check, pushes result.
@@ -385,6 +386,7 @@ data OpCode
   | Stloc_2            -- ^ Pops 1 value, stores it in the 2th local variable.
   | Stloc_3            -- ^ Pops 1 value, stores it in the 3th local variable.
   | StlocN DottedName  -- ^ Pops 1 value, stores it in the local variable specified by name.
+  | Stobj PrimitiveType -- ^ Copies a value of a specified type from the evaluation stack into a supplied memory address.
   | Stsfld
       { fieldType    :: PrimitiveType  -- ^ Type of the field.
       , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.

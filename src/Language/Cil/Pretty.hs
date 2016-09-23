@@ -245,6 +245,7 @@ instance Pretty OpCode where
   pr (Ldloca x)            = ("ldloca " ++) . shows x
   pr (LdlocaN nm)          = ("ldloca " ++) . prName nm
   pr (Ldnull)              = ("ldnull " ++)
+  pr (Ldobj t)             = ("ldobj " ++) . pr t
   pr (Ldsfld t a c f)      = ("ldsfld " ++) . pr t . sp . prFld a c f
   pr (Ldsflda t a c f)     = ("ldsflda " ++) . pr t . sp . prFld a c f
   pr (Ldstr s)             = ("ldstr " ++) . shows s
@@ -287,6 +288,7 @@ instance Pretty OpCode where
   pr (Stloc_2)             = ("stloc.2 " ++)
   pr (Stloc_3)             = ("stloc.3 " ++)
   pr (StlocN nm)           = ("stloc " ++) . prName nm
+  pr (Stobj t)             = ("stobj " ++) . pr t
   pr (Stsfld t a c f)      = ("stsfld " ++) . pr t . sp . prFld a c f
   pr (Sub)                 = ("sub" ++)
   pr (Sub_ovf)             = ("sub.ovf" ++)
