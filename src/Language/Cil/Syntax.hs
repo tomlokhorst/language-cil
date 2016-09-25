@@ -241,6 +241,8 @@ data OpCode
   | Cgt                -- ^ Pops 2 values and compares them.
   | Ckfinite           -- ^ Pops a float or double. Throws an ArithmeticException if the popped value is NaN or +/- infinity. Pushes the popped value.
   | Clt                -- ^ Pops 2 values and compares them.
+  | Conv_r4            -- ^ Convert to float32, pushing F on stack.
+  | Conv_r8            -- ^ Convert to float64, pushing F on stack.
   | Dup                -- ^ Pops 1 value, copies it, pushes the same value twise.
   | Div                -- ^ Pops 2 values, divides the first by the second, pushes the result.
   | Div_un             -- ^ Pops 2 integers, divides the first by the second when consider as unsigned integers, pushes the result.

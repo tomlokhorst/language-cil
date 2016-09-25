@@ -33,7 +33,11 @@ module Language.Cil.Build (
   , ceq
   , cgt
   , ckfinite
-  , clt 
+  , clt
+
+  , conv_r4
+  , conv_r8
+
   , dup
   , div
   , div_un
@@ -238,6 +242,10 @@ ceq, cgt, clt :: MethodDecl
 ceq = OpCode $ Ceq
 cgt = OpCode $ Cgt
 clt = OpCode $ Clt
+
+conv_r4, conv_r8 :: MethodDecl
+conv_r4 = OpCode Conv_r4
+conv_r8 = OpCode Conv_r8
 
 ckfinite :: MethodDecl
 ckfinite = OpCode $ Ckfinite

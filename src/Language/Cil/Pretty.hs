@@ -184,6 +184,8 @@ instance Pretty OpCode where
   pr (Cgt)                 = ("cgt" ++)
   pr (Ckfinite)            = ("ckfinite" ++)
   pr (Clt)                 = ("clt" ++)
+  pr (Conv_r4)             = ("conv.r4" ++)
+  pr (Conv_r8)             = ("conv.r8" ++)
   pr (Div)                 = ("div" ++)
   pr (Div_un)              = ("div.un" ++)
   pr (Dup)                 = ("dup" ++)
