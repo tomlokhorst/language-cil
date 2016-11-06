@@ -77,7 +77,7 @@ data Assembly
 -- | Assembly reference.
 data AssemblyRef
   = AssemblyRef AssemblyName Version PublicKeyToken
-  deriving Show
+  deriving (Eq, Ord, Show)
 
 -- | A Type definition in CIL, either a class or a value type.
 data TypeDef
