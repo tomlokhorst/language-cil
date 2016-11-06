@@ -29,6 +29,8 @@ module Language.Cil.Build (
   , brtrue
   , call
   , callvirt
+  , callMethod
+  , callvirtMethod
   , castclass
   , ceq
   , cgt
@@ -231,6 +233,12 @@ brtrue = OpCode . Brtrue
 
 call :: [CallConv] -> PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
 call ccs p l t m ps = OpCode $ Call ccs p l t m ps
+
+callMethod :: MethodRef -> MethodDecl
+callMethod = OpCode . CallMethod
+
+callvirtMethod :: MethodRef -> MethodDecl
+callvirtMethod = OpCode . CallVirtMethod
 
 callvirt :: PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
 callvirt p l t m ps = OpCode $ CallVirt p l t m ps

@@ -179,6 +179,8 @@ instance Pretty OpCode where
                                . prCall a c m ps
   pr (CallVirt t a c m ps) = ("callvirt instance " ++) . prsp t . sp
                                . prCall a c m ps
+  pr (CallMethod m)        = ("call " ++) . prMethodRef m
+  pr (CallVirtMethod m)    = ("callvirt " ++) . prMethodRef m
   pr (Castclass t)         = ("castclass " ++) . pr t
   pr (Ceq)                 = ("ceq" ++)
   pr (Cgt)                 = ("cgt" ++)
@@ -341,6 +343,15 @@ prCall a c m ps =
   . foldr (.) id (intersperse (", " ++) (map pr ps))
   . (")" ++)
 
+prMethodRef :: MethodRef -> ShowS
+prMethodRef (GenericMethodInstance ccs declTy n tyArgs ps retTy) =
+    prList ccs
+  . pr retTy . sp
+  . pr declTy . ("::" ++) . prName n . prGenericArgs pr tyArgs
+  . ("(" ++)
+  . foldr (.) id (intersperse (", " ++) (map pr ps))
+  . (")" ++)
+
 prTypeToken :: PrimitiveType -> ShowS
 prTypeToken (ValueType a c)     = prAssembly a . prName c
 prTypeToken (ReferenceType a c) = prAssembly a . prName c
@@ -349,11 +360,14 @@ prTypeToken t = pr t
 prAssembly :: DottedName -> ShowS
 prAssembly a = bool (("[" ++) . prName a . ("]" ++)) id (a == "")
 
+prGenericArgs :: (a -> ShowS) -> [a] -> ShowS
+prGenericArgs prArg args = ("<" ++) . foldr (.) id (intersperse ("," ++) (map prArg args)) . (">" ++)
+
 prGenericTypeName :: TypeName -> [a] -> (a -> ShowS) -> ShowS
 prGenericTypeName n args prArg =
     prName n
   . ("`" ++) . shows (length args)
-  . ("<" ++) . foldr (.) id (intersperse ("," ++) (map prArg args)) . (">" ++)
+  . prGenericArgs prArg args
 
 instance Pretty PrimitiveType where
   pr Void                = ("void" ++) 
@@ -372,6 +386,7 @@ instance Pretty PrimitiveType where
   pr (GenericReferenceType a c gs)         = prAssembly a . prGenericTypeName c gs ((("!" ++) .) . prName)
   pr (GenericReferenceTypeInstance a c ts) = ("class " ++) . prAssembly a . prGenericTypeName c ts pr
   pr (GenericType x)     = ("!" ++) . shows x
+  pr (GenericMethodTypeParameter x) = ("!!" ++) . shows x
   pr (ByRef pt)          = pr pt . ("&" ++)
   pr (Array et)          = pr et . ("[]" ++)
 

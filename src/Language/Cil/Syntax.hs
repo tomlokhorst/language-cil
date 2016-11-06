@@ -26,6 +26,7 @@ module Language.Cil.Syntax (
   , FieldDef      (..)
   , FieldAttr     (..)
   , MethodDef     (..)
+  , MethodRef     (..)
   , MethAttr      (..)
   , Parameter     (..)
   , ParamAttr     (..)
@@ -145,6 +146,7 @@ data PrimitiveType
   | GenericReferenceTypeInstance AssemblyName TypeName [PrimitiveType]
   | ByRef PrimitiveType
   | GenericType Offset
+  | GenericMethodTypeParameter Offset
   | Array PrimitiveType
   deriving (Eq, Ord, Show)
 
@@ -203,6 +205,11 @@ data Local
   = Local PrimitiveType LocalName
   deriving Show
 
+-- | Method references for use with CallMethod.
+data MethodRef
+  = GenericMethodInstance [CallConv] PrimitiveType MethodName [PrimitiveType] [PrimitiveType] PrimitiveType -- ^ Calling convention, declaring type, method name, type arguments, parameter types, return type
+  deriving Show
+
 -- | CIL OpCodes inside a method definition.
 -- See <http://msdn.microsoft.com/en-us/library/system.reflection.emit.opcodes_fields.aspx>
 -- for a more complete list with documentation.
@@ -221,6 +228,8 @@ data OpCode
   | Break              -- ^ Inform a debugger that a breakpoint has been reached.
   | Brfalse Label      -- ^ Pops 1 value, if value is false, null reference or zero, jump to specified label.
   | Brtrue Label       -- ^ Pops 1 value, if value is true, not null or non-zero, jump to specified label.
+  | CallMethod MethodRef -- ^ Pops /n/ values, calls specified method, pushes return value. (where /n/ is the number of formal parameters of the method).
+  | CallVirtMethod MethodRef  -- ^ Pops /n/ values, calls specified virtual method, pushes return value. (where /n/ is the number of formal parameters of the method).
   | Call
       { callConv     :: [CallConv]      -- ^ Method is associated with class or instance.
       , returnType   :: PrimitiveType   -- ^ Return type of the method.
