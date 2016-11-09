@@ -99,6 +99,8 @@ data ClassAttr
   | CaPublic
   | CaNestedPublic
   | CaNestedPrivate
+  | CaBeforeFieldInit
+  | CaSealed
   deriving Show
 
 -- | Class declarations, i.e. the body of a class.

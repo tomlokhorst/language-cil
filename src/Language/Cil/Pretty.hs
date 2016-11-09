@@ -79,6 +79,8 @@ instance Pretty ClassAttr where
   pr CaPublic        = ("public" ++)
   pr CaNestedPublic  = ("nested public" ++)
   pr CaNestedPrivate = ("nested private" ++)
+  pr CaBeforeFieldInit = ("beforefieldinit" ++)
+  pr CaSealed        = ("sealed" ++)
 
 instance Pretty ClassDecl where
   pr (FieldDef fd)  = pr fd
