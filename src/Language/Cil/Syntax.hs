@@ -252,6 +252,14 @@ data OpCode
   | Cgt                -- ^ Pops 2 values and compares them.
   | Ckfinite           -- ^ Pops a float or double. Throws an ArithmeticException if the popped value is NaN or +/- infinity. Pushes the popped value.
   | Clt                -- ^ Pops 2 values and compares them.
+  | Conv_i1            -- ^ Convert to int8, pushing I on stack.
+  | Conv_i2            -- ^ Convert to int16, pushing I on stack.
+  | Conv_i4            -- ^ Convert to int32, pushing I on stack.
+  | Conv_i8            -- ^ Convert to int64, pushing I on stack.
+  | Conv_u1            -- ^ Convert to uint8, pushing U on stack.
+  | Conv_u2            -- ^ Convert to uint16, pushing U on stack.
+  | Conv_u4            -- ^ Convert to uint32, pushing U on stack.
+  | Conv_u8            -- ^ Convert to uint64, pushing U on stack.
   | Conv_r4            -- ^ Convert to float32, pushing F on stack.
   | Conv_r8            -- ^ Convert to float64, pushing F on stack.
   | Dup                -- ^ Pops 1 value, copies it, pushes the same value twise.

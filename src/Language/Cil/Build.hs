@@ -37,6 +37,14 @@ module Language.Cil.Build (
   , ckfinite
   , clt
 
+  , conv_i1
+  , conv_i2
+  , conv_i4
+  , conv_i8
+  , conv_u1
+  , conv_u2
+  , conv_u4
+  , conv_u8
   , conv_r4
   , conv_r8
 
@@ -251,7 +259,15 @@ ceq = OpCode $ Ceq
 cgt = OpCode $ Cgt
 clt = OpCode $ Clt
 
-conv_r4, conv_r8 :: MethodDecl
+conv_i1, conv_i2, conv_i4, conv_i8, conv_u1, conv_u2, conv_u4, conv_u8, conv_r4, conv_r8 :: MethodDecl
+conv_i1 = OpCode Conv_i1
+conv_i2 = OpCode Conv_i2
+conv_i4 = OpCode Conv_i4
+conv_i8 = OpCode Conv_i8
+conv_u1 = OpCode Conv_u1
+conv_u2 = OpCode Conv_u2
+conv_u4 = OpCode Conv_u4
+conv_u8 = OpCode Conv_u8
 conv_r4 = OpCode Conv_r4
 conv_r8 = OpCode Conv_r8
 
