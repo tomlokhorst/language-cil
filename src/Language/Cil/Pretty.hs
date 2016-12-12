@@ -79,6 +79,8 @@ instance Pretty ClassAttr where
   pr CaPublic        = ("public" ++)
   pr CaNestedPublic  = ("nested public" ++)
   pr CaNestedPrivate = ("nested private" ++)
+  pr CaBeforeFieldInit = ("beforefieldinit" ++)
+  pr CaSealed        = ("sealed" ++)
 
 instance Pretty ClassDecl where
   pr (FieldDef fd)  = pr fd
@@ -179,11 +181,23 @@ instance Pretty OpCode where
                                . prCall a c m ps
   pr (CallVirt t a c m ps) = ("callvirt instance " ++) . prsp t . sp
                                . prCall a c m ps
+  pr (CallMethod m)        = ("call " ++) . prMethodRef m
+  pr (CallVirtMethod m)    = ("callvirt " ++) . prMethodRef m
   pr (Castclass t)         = ("castclass " ++) . pr t
   pr (Ceq)                 = ("ceq" ++)
   pr (Cgt)                 = ("cgt" ++)
   pr (Ckfinite)            = ("ckfinite" ++)
   pr (Clt)                 = ("clt" ++)
+  pr (Conv_i1)             = ("conv.i1" ++)
+  pr (Conv_i2)             = ("conv.i2" ++)
+  pr (Conv_i4)             = ("conv.i4" ++)
+  pr (Conv_i8)             = ("conv.i8" ++)
+  pr (Conv_u1)             = ("conv.u1" ++)
+  pr (Conv_u2)             = ("conv.u2" ++)
+  pr (Conv_u4)             = ("conv.u4" ++)
+  pr (Conv_u8)             = ("conv.u8" ++)
+  pr (Conv_r4)             = ("conv.r4" ++)
+  pr (Conv_r8)             = ("conv.r8" ++)
   pr (Div)                 = ("div" ++)
   pr (Div_un)              = ("div.un" ++)
   pr (Dup)                 = ("dup" ++)
@@ -211,6 +225,7 @@ instance Pretty OpCode where
   pr (Ldc_i8 x)            = ("ldc.i8 " ++) . shows x
   pr (Ldc_r4 x)            = ("ldc.r4 " ++) . shows x
   pr (Ldc_r8 x)            = ("ldc.r8 " ++) . shows x
+  pr (Ldelema t)           = ("ldelema " ++) . pr t
   pr (Ldelem_i)            = ("ldelem.i " ++)
   pr (Ldelem_i1)           = ("ldelem.i1 " ++)
   pr (Ldelem_i2)           = ("ldelem.i2 " ++)
@@ -245,6 +260,7 @@ instance Pretty OpCode where
   pr (Ldloca x)            = ("ldloca " ++) . shows x
   pr (LdlocaN nm)          = ("ldloca " ++) . prName nm
   pr (Ldnull)              = ("ldnull " ++)
+  pr (Ldobj t)             = ("ldobj " ++) . pr t
   pr (Ldsfld t a c f)      = ("ldsfld " ++) . pr t . sp . prFld a c f
   pr (Ldsflda t a c f)     = ("ldsflda " ++) . pr t . sp . prFld a c f
   pr (Ldstr s)             = ("ldstr " ++) . shows s
@@ -287,6 +303,7 @@ instance Pretty OpCode where
   pr (Stloc_2)             = ("stloc.2 " ++)
   pr (Stloc_3)             = ("stloc.3 " ++)
   pr (StlocN nm)           = ("stloc " ++) . prName nm
+  pr (Stobj t)             = ("stobj " ++) . pr t
   pr (Stsfld t a c f)      = ("stsfld " ++) . pr t . sp . prFld a c f
   pr (Sub)                 = ("sub" ++)
   pr (Sub_ovf)             = ("sub.ovf" ++)
@@ -336,6 +353,15 @@ prCall a c m ps =
   . foldr (.) id (intersperse (", " ++) (map pr ps))
   . (")" ++)
 
+prMethodRef :: MethodRef -> ShowS
+prMethodRef (GenericMethodInstance ccs declTy n tyArgs ps retTy) =
+    prList ccs
+  . pr retTy . sp
+  . pr declTy . ("::" ++) . prName n . prGenericArgs pr tyArgs
+  . ("(" ++)
+  . foldr (.) id (intersperse (", " ++) (map pr ps))
+  . (")" ++)
+
 prTypeToken :: PrimitiveType -> ShowS
 prTypeToken (ValueType a c)     = prAssembly a . prName c
 prTypeToken (ReferenceType a c) = prAssembly a . prName c
@@ -344,11 +370,14 @@ prTypeToken t = pr t
 prAssembly :: DottedName -> ShowS
 prAssembly a = bool (("[" ++) . prName a . ("]" ++)) id (a == "")
 
+prGenericArgs :: (a -> ShowS) -> [a] -> ShowS
+prGenericArgs prArg args = ("<" ++) . foldr (.) id (intersperse ("," ++) (map prArg args)) . (">" ++)
+
 prGenericTypeName :: TypeName -> [a] -> (a -> ShowS) -> ShowS
 prGenericTypeName n args prArg =
     prName n
   . ("`" ++) . shows (length args)
-  . ("<" ++) . foldr (.) id (intersperse ("," ++) (map prArg args)) . (">" ++)
+  . prGenericArgs prArg args
 
 instance Pretty PrimitiveType where
   pr Void                = ("void" ++) 
@@ -367,6 +396,7 @@ instance Pretty PrimitiveType where
   pr (GenericReferenceType a c gs)         = prAssembly a . prGenericTypeName c gs ((("!" ++) .) . prName)
   pr (GenericReferenceTypeInstance a c ts) = ("class " ++) . prAssembly a . prGenericTypeName c ts pr
   pr (GenericType x)     = ("!" ++) . shows x
+  pr (GenericMethodTypeParameter x) = ("!!" ++) . shows x
   pr (ByRef pt)          = pr pt . ("&" ++)
   pr (Array et)          = pr et . ("[]" ++)
 

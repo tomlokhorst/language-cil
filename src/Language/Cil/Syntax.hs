@@ -26,6 +26,7 @@ module Language.Cil.Syntax (
   , FieldDef      (..)
   , FieldAttr     (..)
   , MethodDef     (..)
+  , MethodRef     (..)
   , MethAttr      (..)
   , Parameter     (..)
   , ParamAttr     (..)
@@ -76,7 +77,7 @@ data Assembly
 -- | Assembly reference.
 data AssemblyRef
   = AssemblyRef AssemblyName Version PublicKeyToken
-  deriving Show
+  deriving (Eq, Ord, Show)
 
 -- | A Type definition in CIL, either a class or a value type.
 data TypeDef
@@ -98,6 +99,8 @@ data ClassAttr
   | CaPublic
   | CaNestedPublic
   | CaNestedPrivate
+  | CaBeforeFieldInit
+  | CaSealed
   deriving Show
 
 -- | Class declarations, i.e. the body of a class.
@@ -145,6 +148,7 @@ data PrimitiveType
   | GenericReferenceTypeInstance AssemblyName TypeName [PrimitiveType]
   | ByRef PrimitiveType
   | GenericType Offset
+  | GenericMethodTypeParameter Offset
   | Array PrimitiveType
   deriving (Eq, Ord, Show)
 
@@ -203,6 +207,11 @@ data Local
   = Local PrimitiveType LocalName
   deriving Show
 
+-- | Method references for use with CallMethod.
+data MethodRef
+  = GenericMethodInstance [CallConv] PrimitiveType MethodName [PrimitiveType] [PrimitiveType] PrimitiveType -- ^ Calling convention, declaring type, method name, type arguments, parameter types, return type
+  deriving Show
+
 -- | CIL OpCodes inside a method definition.
 -- See <http://msdn.microsoft.com/en-us/library/system.reflection.emit.opcodes_fields.aspx>
 -- for a more complete list with documentation.
@@ -221,6 +230,8 @@ data OpCode
   | Break              -- ^ Inform a debugger that a breakpoint has been reached.
   | Brfalse Label      -- ^ Pops 1 value, if value is false, null reference or zero, jump to specified label.
   | Brtrue Label       -- ^ Pops 1 value, if value is true, not null or non-zero, jump to specified label.
+  | CallMethod MethodRef -- ^ Pops /n/ values, calls specified method, pushes return value. (where /n/ is the number of formal parameters of the method).
+  | CallVirtMethod MethodRef  -- ^ Pops /n/ values, calls specified virtual method, pushes return value. (where /n/ is the number of formal parameters of the method).
   | Call
       { callConv     :: [CallConv]      -- ^ Method is associated with class or instance.
       , returnType   :: PrimitiveType   -- ^ Return type of the method.
@@ -241,6 +252,16 @@ data OpCode
   | Cgt                -- ^ Pops 2 values and compares them.
   | Ckfinite           -- ^ Pops a float or double. Throws an ArithmeticException if the popped value is NaN or +/- infinity. Pushes the popped value.
   | Clt                -- ^ Pops 2 values and compares them.
+  | Conv_i1            -- ^ Convert to int8, pushing I on stack.
+  | Conv_i2            -- ^ Convert to int16, pushing I on stack.
+  | Conv_i4            -- ^ Convert to int32, pushing I on stack.
+  | Conv_i8            -- ^ Convert to int64, pushing I on stack.
+  | Conv_u1            -- ^ Convert to uint8, pushing U on stack.
+  | Conv_u2            -- ^ Convert to uint16, pushing U on stack.
+  | Conv_u4            -- ^ Convert to uint32, pushing U on stack.
+  | Conv_u8            -- ^ Convert to uint64, pushing U on stack.
+  | Conv_r4            -- ^ Convert to float32, pushing F on stack.
+  | Conv_r8            -- ^ Convert to float64, pushing F on stack.
   | Dup                -- ^ Pops 1 value, copies it, pushes the same value twise.
   | Div                -- ^ Pops 2 values, divides the first by the second, pushes the result.
   | Div_un             -- ^ Pops 2 integers, divides the first by the second when consider as unsigned integers, pushes the result.
@@ -280,7 +301,7 @@ data OpCode
   | Ldelem_r4          -- ^ Pops an array reference and an index. Pushes the float in the specified slot of the array.
   | Ldelem_r8          -- ^ Pops an array reference and an index. Pushes the double in the specified slot of the array.
   | Ldelem_ref         -- ^ Pops an array reference and an index. Pushes the object reference in the specified slot of the array.
-  | Ldelema            -- ^ Pops an array reference and an index. Pushes the address of the specified slot of the array.
+  | Ldelema PrimitiveType -- ^ Pops an array reference and an index. Pushes the address of the specified slot of the array.
   | Ldfld
       { fieldType    :: PrimitiveType  -- ^ Type of the field.
       , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.
@@ -336,6 +357,7 @@ data OpCode
       } -- ^ Pops type reference, find address of specified field on the type, pushes address to the stack.
   | Ldstr String       -- ^ Pushes an object reference to the specified string constant.
   | Ldtoken PrimitiveType -- ^ Pushes the RuntimeTypeHandle of the specified type.
+  | Ldobj PrimitiveType -- ^ Copies the value type object pointed to by an address to the top of the evaluation stack.
   | Mul                -- ^ Pops 2 values, multiplies the values, pushes result.
   | Mul_ovf            -- ^ Pops 2 values, multiplies the values with a signed overflow check, pushes result.
   | Mul_ovf_un         -- ^ Pops 2 values, multiplies the values with an unsigned overflow check, pushes result.
@@ -385,6 +407,7 @@ data OpCode
   | Stloc_2            -- ^ Pops 1 value, stores it in the 2th local variable.
   | Stloc_3            -- ^ Pops 1 value, stores it in the 3th local variable.
   | StlocN DottedName  -- ^ Pops 1 value, stores it in the local variable specified by name.
+  | Stobj PrimitiveType -- ^ Copies a value of a specified type from the evaluation stack into a supplied memory address.
   | Stsfld
       { fieldType    :: PrimitiveType  -- ^ Type of the field.
       , assemblyName :: AssemblyName   -- ^ Name of the assembly where the field resides.

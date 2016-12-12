@@ -29,11 +29,25 @@ module Language.Cil.Build (
   , brtrue
   , call
   , callvirt
+  , callMethod
+  , callvirtMethod
   , castclass
   , ceq
   , cgt
   , ckfinite
-  , clt 
+  , clt
+
+  , conv_i1
+  , conv_i2
+  , conv_i4
+  , conv_i8
+  , conv_u1
+  , conv_u2
+  , conv_u4
+  , conv_u8
+  , conv_r4
+  , conv_r8
+
   , dup
   , div
   , div_un
@@ -85,6 +99,7 @@ module Language.Cil.Build (
   , ldsflda
   , ldstr
   , ldtoken
+  , ldobj
   , mul
   , mul_ovf
   , mul_ovf_un
@@ -120,6 +135,7 @@ module Language.Cil.Build (
   , stind_ref
   , stloc
   , stlocN
+  , stobj
   , stsfld
   , sub
   , sub_ovf
@@ -226,6 +242,12 @@ brtrue = OpCode . Brtrue
 call :: [CallConv] -> PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
 call ccs p l t m ps = OpCode $ Call ccs p l t m ps
 
+callMethod :: MethodRef -> MethodDecl
+callMethod = OpCode . CallMethod
+
+callvirtMethod :: MethodRef -> MethodDecl
+callvirtMethod = OpCode . CallVirtMethod
+
 callvirt :: PrimitiveType -> AssemblyName -> TypeName -> MethodName -> [PrimitiveType] -> MethodDecl
 callvirt p l t m ps = OpCode $ CallVirt p l t m ps
 
@@ -236,6 +258,18 @@ ceq, cgt, clt :: MethodDecl
 ceq = OpCode $ Ceq
 cgt = OpCode $ Cgt
 clt = OpCode $ Clt
+
+conv_i1, conv_i2, conv_i4, conv_i8, conv_u1, conv_u2, conv_u4, conv_u8, conv_r4, conv_r8 :: MethodDecl
+conv_i1 = OpCode Conv_i1
+conv_i2 = OpCode Conv_i2
+conv_i4 = OpCode Conv_i4
+conv_i8 = OpCode Conv_i8
+conv_u1 = OpCode Conv_u1
+conv_u2 = OpCode Conv_u2
+conv_u4 = OpCode Conv_u4
+conv_u8 = OpCode Conv_u8
+conv_r4 = OpCode Conv_r4
+conv_r8 = OpCode Conv_r8
 
 ckfinite :: MethodDecl
 ckfinite = OpCode $ Ckfinite
@@ -331,8 +365,8 @@ ldelem_r8 = OpCode $ Ldelem_r8
 ldelem_ref :: MethodDecl
 ldelem_ref = OpCode $ Ldelem_ref
 
-ldelema :: MethodDecl
-ldelema = OpCode $ Ldelema
+ldelema :: PrimitiveType -> MethodDecl
+ldelema = OpCode . Ldelema
 
 ldfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 ldfld p a t f = OpCode $ Ldfld p a t f
@@ -403,6 +437,9 @@ ldlocaN nm = OpCode $ LdlocaN nm
 
 ldnull :: MethodDecl
 ldnull = OpCode $ Ldnull
+
+ldobj :: PrimitiveType -> MethodDecl
+ldobj = OpCode . Ldobj
 
 ldsfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 ldsfld p a t f = OpCode $ Ldsfld p a t f
@@ -528,6 +565,9 @@ stloc x = OpCode $ Stloc x
 stlocN :: LocalName -> MethodDecl
 stlocN nm = OpCode $ StlocN nm
 
+stobj :: PrimitiveType -> MethodDecl
+stobj = OpCode . Stobj
+
 stsfld :: PrimitiveType -> AssemblyName -> TypeName -> FieldName -> MethodDecl
 stsfld p a t f = OpCode $ Stsfld p a t f
 
@@ -602,9 +642,9 @@ supportsPrefix Stind_r8  = True
 supportsPrefix Stind_ref = True
 supportsPrefix (Ldfld _ _ _ _) = True
 supportsPrefix (Stfld _ _ _ _) = True
+supportsPrefix (Ldobj _) = True
+supportsPrefix (Stobj _) = True
 -- there are several cases for not-yet-supported opcodes
--- supportsPrefix (Ldobj ...)
--- supportsPrefix (Stobj ...)
 -- supportsPrefix (Initblk ...)
 -- supportsPrefix (Cpblk ...)
 supportsPrefix _         = False
